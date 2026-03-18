@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "npm run build && CLOUDFLARE_API_TOKEN=$(security find-generic-password -a openclaw -s op-connect-token -w | xargs -I{} node -e \"const r=require('child_process');const t=r.execSync('curl -s -H Authorization: Bearer {} http://localhost:8080/v1/vaults/jzi6igkxfanitosao62kpxirfy/items/qtvqojqabjzypqquuqi4ceknby').toString();const d=JSON.parse(t);console.log(d.fields.find(f=>f.label==='API token').value)\") && wrangler pages deploy dist --project-name health-app-prototype --branch main"
   },
   "dependencies": {
     "react": "^19.2.4",
@@ -27,5 +27,5 @@
     "globals": "^17.4.0",
     "vite": "^8.0.0"
   },
-  "homepage": "https://tommoffat.github.io/health-app-prototype"
+  "homepage": "https://health-app-prototype.pages.dev"
 }
