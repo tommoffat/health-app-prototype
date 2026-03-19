@@ -152,6 +152,25 @@ function VerticalGauge({ value, color, max = 100 }) {
   )
 }
 
+/* ── Metric Preview Tile ─────────────────────────────── */
+function MetricTile({ label, value, unit, miniData, color }) {
+  return (
+    <div style={{ flex: 1, padding: '8px 4px' }}>
+      <div style={{ fontSize: 10, color: TEXT_SECONDARY, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2 }}>{label}</div>
+      <div style={{ fontSize: 18, fontWeight: 700, color: TEXT }}>
+        {value}{unit && <span style={{ fontSize: 11, color: TEXT_SECONDARY, fontWeight: 400 }}> {unit}</span>}
+      </div>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 24, marginTop: 6 }}>
+        {miniData.map((v, i) => {
+          const max = Math.max(...miniData)
+          const h = Math.max(3, (v / max) * 22)
+          return <div key={i} style={{ width: 3, height: h, borderRadius: 1.5, background: i === miniData.length - 1 ? color : '#444' }} />
+        })}
+      </div>
+    </div>
+  )
+}
+
 /* ── Main Today screen ───────────────────────────────── */
 export default function TodayScreen() {
   const [modal, setModal] = useState(null)
@@ -219,6 +238,27 @@ export default function TodayScreen() {
             <ScoreRing value={today.sleep.score} max={100} gradStart="#5B8DEF" gradEnd="#7B68EE" label="Sleep" size={100} id="sleepGrad" />
           </div>
         </div>
+        {/* ── Metric Preview Row ─────────────────────────── */}
+        <div style={{ display: 'flex', borderTop: `1px solid ${SEPARATOR}`, padding: '12px 8px 0' }}>
+          {/* Strain metrics */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <MetricTile label="HRV Load" value="8.4" unit="" miniData={[6.1,7.2,8.9,7.5,9.1,8.0,8.4]} color={STRAIN_COLOR} />
+            <MetricTile label="Duration" value="34" unit="min" miniData={[20,45,30,55,25,40,34]} color={STRAIN_COLOR} />
+          </div>
+          <div style={{ width: 1, background: SEPARATOR, margin: '0 4px' }} />
+          {/* Recovery metrics */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <MetricTile label="HRV" value="68" unit="ms" miniData={[61,64,68,65,70,68,68]} color={RECOVERY_COLOR} />
+            <MetricTile label="RHR" value="52" unit="bpm" miniData={[54,53,52,55,51,52,52]} color={RECOVERY_COLOR} />
+          </div>
+          <div style={{ width: 1, background: SEPARATOR, margin: '0 4px' }} />
+          {/* Sleep metrics */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <MetricTile label="Duration" value="7h 22m" unit="" miniData={[6.5,7.0,7.8,7.2,8.1,7.5,7.4]} color={SLEEP_COLOR} />
+            <MetricTile label="Deep" value="1h 44m" unit="" miniData={[1.2,1.5,1.8,1.4,2.0,1.6,1.7]} color={SLEEP_COLOR} />
+          </div>
+        </div>
+
         {/* Coaching */}
         <div style={{ height: 1, background: SEPARATOR, margin: '0 20px' }} />
         <div style={{ padding: '16px 20px 20px' }}>
