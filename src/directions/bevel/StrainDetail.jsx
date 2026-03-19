@@ -1,128 +1,112 @@
-import { today } from '../../data/fake'
+import React from 'react';
+import ScoreRing from './components/ScoreRing';
+import HatchedRing from './components/HatchedRing';
+import TrendRow from './components/TrendRow';
 
-const BG = '#0A0A0A'
-const CARD = '#1C1C1E'
-const TEXT = '#FFFFFF'
-const TEXT_SECONDARY = '#888888'
-const SEPARATOR = '#333333'
-const COACHING_LABEL = '#E8B830'
-const STRAIN_COLOR = '#F0943A'
+const BG = '#0F1117';
+const SURFACE = '#1A1E25';
+const SURFACE2 = '#22272F';
+const BORDER = '#2A3040';
+const TEXT = '#FFFFFF';
+const TEXT2 = '#8A8FA8';
+const STRAIN_COLOR = '#F0943A';
+const RECOVERY_COLOR = '#6ECC6E';
+const SLEEP_COLOR = '#7B8EF0';
+const COACHING_LABEL = '#C9A050';
 
-export default function StrainDetail({ onClose }) {
-  const pct = Math.round(today.strain / 21 * 100)
-  const r = 58, sw = 12, size = 150
-  const circ = 2 * Math.PI * r
-  const filled = circ * (pct / 100)
-  const cx = size / 2, cy = size / 2
-
-  const targetMin = 41, targetMax = 63
-  const targetLen = circ * (targetMax - targetMin) / 100
-  const gapLen = circ - targetLen
-  const targetOffset = circ * (1 - targetMin / 100 + 0.25)
+export default function StrainDetail({ navigate, openModal }) {
+  const trends = [
+    { icon: '🔥', label: 'Strain Score', value: '59%', status: '→ Normal range', statusColor: TEXT2, sparkData: [45,52,58,55,60,57,59] },
+    { icon: '⏱', label: 'Exercise Duration', value: '34m', status: '→ Normal range', statusColor: TEXT2, sparkData: [30,35,40,32,38,36,34] },
+    { icon: '❤️', label: 'Daytime HR', value: '72 bpm', status: '→ Normal range', statusColor: TEXT2, sparkData: [70,72,74,71,73,72,72] },
+    { icon: '⚡', label: 'Total Energy', value: '8.2k kJ', status: '→ Normal range', statusColor: TEXT2, sparkData: [7.5,8.0,8.5,8.2,8.4,8.1,8.2] },
+    { icon: '👟', label: 'Step Count', value: '8,432', status: '→ Normal range', statusColor: TEXT2, sparkData: [7500,8000,8500,8200,8400,8300,8432] },
+  ];
 
   return (
-    <div style={{
-      position: 'fixed', inset: 0, background: BG, zIndex: 100,
-      display: 'flex', flexDirection: 'column',
-      paddingTop: 'env(safe-area-inset-top)',
-      overflowY: 'auto',
-    }}>
-      {/* Gradient header */}
-      <div style={{
-        background: 'linear-gradient(to bottom, #2D1B4E, #0A0A0A)',
-        padding: '16px 16px 40px', position: 'relative',
-        display: 'flex', flexDirection: 'column', alignItems: 'center',
-      }}>
-        <button onClick={onClose} style={{
-          position: 'absolute', left: 16, top: 16,
-          width: 36, height: 36, borderRadius: 18, border: '1px solid #555',
-          background: 'none', color: TEXT, fontSize: 18, display: 'flex',
-          alignItems: 'center', justifyContent: 'center',
-        }}>←</button>
-        <div style={{ fontSize: 20, fontWeight: 700, color: TEXT, marginTop: 4 }}>Strain</div>
-        <div style={{ fontSize: 14, color: TEXT_SECONDARY, marginTop: 4, cursor: 'pointer' }}>March 19, 2026 ▾</div>
-
-        {/* Large ring */}
-        <div style={{ marginTop: 24 }}>
-          <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-            <defs>
-              <pattern id="hatchLg" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
-                <line x1="0" y1="0" x2="0" y2="6" stroke="#F5C84240" strokeWidth="3" />
-              </pattern>
-              <linearGradient id="strainGradLg" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#F5C842" />
-                <stop offset="100%" stopColor="#F0943A" />
-              </linearGradient>
-            </defs>
-            <circle cx={cx} cy={cy} r={r} fill="none" stroke="#333" strokeWidth={sw} />
-            <circle cx={cx} cy={cy} r={r} fill="none" stroke="url(#hatchLg)"
-              strokeWidth={sw + 4}
-              strokeDasharray={`${targetLen} ${gapLen}`}
-              strokeDashoffset={targetOffset}
-              style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
-            />
-            <circle cx={cx} cy={cy} r={r} fill="none"
-              stroke="url(#strainGradLg)" strokeWidth={sw}
-              strokeDasharray={`${filled} ${circ - filled}`}
-              strokeLinecap="round"
-              style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
-            />
-          </svg>
-        </div>
-
-        <div style={{ fontSize: 48, fontWeight: 800, color: TEXT, marginTop: 8 }}>{pct}%</div>
-        <div style={{ fontSize: 16, color: STRAIN_COLOR, fontWeight: 600 }}>Strain</div>
-        <div style={{ fontSize: 14, color: TEXT_SECONDARY, marginTop: 4 }}>Target Strain: 41–63%</div>
-      </div>
-
-      {/* Stats row */}
-      <div style={{ display: 'flex', gap: 12, padding: '0 16px', marginTop: -16 }}>
-        <div style={{ flex: 1, background: CARD, borderRadius: 14, padding: 18, textAlign: 'center' }}>
-          <div style={{ fontSize: 12, color: TEXT_SECONDARY, marginBottom: 6 }}>Duration</div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: TEXT }}>1h 15m</div>
-        </div>
-        <div style={{ flex: 1, background: CARD, borderRadius: 14, padding: 18, textAlign: 'center' }}>
-          <div style={{ fontSize: 12, color: TEXT_SECONDARY, marginBottom: 6 }}>Total Energy</div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: TEXT }}>487 cal</div>
+    <div style={{ background: 'linear-gradient(160deg, #1A0E08 0%, #2A1408 50%, #1A1010 100%)', minHeight: '100vh', color: TEXT, paddingBottom: 40 }}>
+      {/* Top bar */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px 0' }}>
+        <div style={{ fontSize: 24, cursor: 'pointer', width: 40 }} onClick={() => navigate('home')}>←</div>
+        <div style={{ fontWeight: 700, fontSize: 18 }}>Strain</div>
+        <div style={{ display: 'flex', gap: 16, width: 40, justifyContent: 'flex-end' }}>
+          <span style={{ fontSize: 18, cursor: 'pointer' }}>↗</span>
+          <span style={{ fontSize: 18, cursor: 'pointer' }}>🔔</span>
         </div>
       </div>
 
-      {/* Coaching */}
-      <div style={{ background: CARD, borderRadius: 16, margin: '16px 16px 0', padding: 20 }}>
-        <div style={{ height: 1, background: SEPARATOR, marginBottom: 16 }} />
-        <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, color: COACHING_LABEL, textTransform: 'uppercase' }}>COACHING</span>
-        <p style={{ fontSize: 15, color: TEXT, lineHeight: 1.5, marginTop: 10 }}>
-          Your strain is moderate today. Consider adding a Zone 2 session this afternoon to reach your optimal strain target of 41-63%.
-        </p>
+      {/* Date */}
+      <div style={{ textAlign: 'center', color: TEXT2, fontSize: 14, marginTop: 8 }}>Feb 18, 2026 ▾</div>
+
+      {/* Hatched Ring */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '24px 0' }}>
+        <HatchedRing value={59} color={STRAIN_COLOR} trackColor='#3A2A18' label="Strain" size={120} targetMin={41} targetMax={63} />
+        <div style={{ fontSize: 13, color: TEXT2, marginTop: 10 }}>Target Strain: 41 – 63%</div>
+      </div>
+
+      {/* Stat cards */}
+      <div style={{ display: 'flex', gap: 12, padding: '0 20px', marginBottom: 16 }}>
+        <div style={{ background: SURFACE, borderRadius: 14, padding: 14, flex: 1 }}>
+          <div style={{ fontSize: 14, marginBottom: 4 }}>⏱ Duration</div>
+          <div style={{ fontSize: 20, fontWeight: 700 }}>34m</div>
+        </div>
+        <div style={{ background: SURFACE, borderRadius: 14, padding: 14, flex: 1 }}>
+          <div style={{ fontSize: 14, marginBottom: 4 }}>🔥 Total Energy</div>
+          <div style={{ fontSize: 20, fontWeight: 700 }}>8,200 kJ</div>
+        </div>
+      </div>
+
+      {/* Coaching card */}
+      <div style={{ background: SURFACE, borderRadius: 14, padding: 16, margin: '16px 20px' }}>
+        <div style={{ color: COACHING_LABEL, fontSize: 11, letterSpacing: 1.5, fontWeight: 600, marginBottom: 8 }}>COACHING</div>
+        <div style={{ fontSize: 14, lineHeight: 1.5, color: TEXT }}>Your strain is within the optimal target zone. This level supports recovery while maintaining fitness gains.</div>
+      </div>
+
+      {/* View insights */}
+      <div style={{ background: SURFACE, borderRadius: 14, padding: 14, margin: '0 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
+        <span style={{ fontSize: 14 }}>✨ View insights</span>
+        <span style={{ color: TEXT2, fontSize: 18 }}>›</span>
       </div>
 
       {/* Timeline */}
-      <div style={{ padding: '20px 16px 32px' }}>
-        <div style={{ fontSize: 18, fontWeight: 700, color: TEXT, marginBottom: 12 }}>Activities</div>
-        {[
-          { name: 'Upper Body Strength', time: '7:30 AM - 8:45 AM', icon: '🏋️', strain: '8.2' },
-          { name: 'Evening Walk', time: '6:00 PM - 6:35 PM', icon: '🚶', strain: '4.2' },
-        ].map((act, i) => (
-          <div key={i} style={{
-            background: CARD, borderRadius: 14, padding: '14px 16px', marginBottom: 8,
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 18, background: '#2A2A2A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>
-                {act.icon}
-              </div>
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: TEXT }}>{act.name}</div>
-                <div style={{ fontSize: 12, color: TEXT_SECONDARY }}>{act.time}</div>
-              </div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 14, fontWeight: 600, color: STRAIN_COLOR }}>{act.strain}</span>
-              <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={TEXT_SECONDARY} strokeWidth={2}><polyline points="9 18 15 12 9 6" /></svg>
-            </div>
+      <div style={{ padding: '0 20px', marginTop: 24 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <div style={{ fontWeight: 700, fontSize: 18 }}>Timeline</div>
+          <div style={{ fontSize: 22, cursor: 'pointer', color: TEXT2 }}>+</div>
+        </div>
+        <div
+          style={{ background: SURFACE, borderRadius: 14, padding: 14, display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}
+          onClick={() => openModal('workout-detail')}
+        >
+          <div style={{ position: 'relative', width: 40, height: 40 }}>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#3A2A18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🧗</div>
+            <div style={{ position: 'absolute', bottom: -4, right: -4, background: STRAIN_COLOR, color: '#fff', fontSize: 10, fontWeight: 700, borderRadius: 8, padding: '1px 5px', minWidth: 20, textAlign: 'center' }}>12</div>
           </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 700, fontSize: 15 }}>Upper Body Strength</div>
+            <div style={{ fontSize: 12, color: TEXT2, marginTop: 2 }}>Today at 9:00 AM</div>
+          </div>
+          <div style={{ color: TEXT2, fontSize: 20 }}>›</div>
+        </div>
+      </div>
+
+      {/* Trends */}
+      <div style={{ padding: '0 20px', marginTop: 20 }}>
+        <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 12 }}>Trends</div>
+        {trends.map((t, i) => (
+          <TrendRow
+            key={i}
+            icon={t.icon}
+            label={t.label}
+            value={t.value}
+            status={t.status}
+            statusColor={t.statusColor}
+            sparkData={t.sparkData}
+            sparkColor={STRAIN_COLOR}
+            onPress={() => openModal('trend-detail', { metric: t.label, category: 'strain', color: STRAIN_COLOR })}
+          />
         ))}
       </div>
     </div>
-  )
+  );
 }

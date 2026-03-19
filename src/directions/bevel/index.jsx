@@ -1,112 +1,102 @@
-import { useState } from 'react'
-import Today from './Today'
+import React, { useState } from 'react'
+import HomeScreen from './HomeScreen'
+import SleepDetail from './SleepDetail'
+import RecoveryDetail from './RecoveryDetail'
+import StrainDetail from './StrainDetail'
+import JournalScreen from './JournalScreen'
+import FitnessScreen from './FitnessScreen'
+import BiologyScreen from './BiologyScreen'
+import PrimarySleepModal from './PrimarySleepModal'
+import TrendDetailModal from './TrendDetailModal'
+import WorkoutDetailModal from './WorkoutDetailModal'
+import LogModal from './LogModal'
 
-const BG = '#0A0A0A'
+const BG = '#0F1117'
+const SURFACE = '#1A1E25'
 const TEXT = '#FFFFFF'
-const TEXT_SECONDARY = '#888888'
+const TEXT2 = '#8A8FA8'
+const BORDER = '#2A3040'
 
 const tabs = [
-  { id: 'home', label: 'Home', icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-    </svg>
-  )},
-  { id: 'journal', label: 'Journal', icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-    </svg>
-  )},
-  { id: 'fitness', label: 'Fitness', icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
-    </svg>
-  )},
-  { id: 'biology', label: 'Biology', icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-    </svg>
-  )},
-  { id: 'add', label: '', icon: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-    </svg>
-  )},
+  { id: 'home', label: 'Home', icon: 'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z' },
+  { id: 'journal', label: 'Journal', icon: 'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z' },
+  { id: 'fitness', label: 'Fitness', icon: 'M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3A7.28 7.28 0 0018 12.5v-2h-2c-1.86-.64-3.42-1.4-4.5-2.5l-1.2-1.3c-.4-.4-1-.6-1.6-.6-.2 0-.3 0-.5.1L6 8.3V13h2V9.6l1.8-.7' },
+  { id: 'biology', label: 'Biology', icon: 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' },
 ]
 
 export default function BevelApp({ onExit }) {
-  const [activeTab, setActiveTab] = useState('home')
+  const [screen, setScreen] = useState('home')
+  const [screenProps, setScreenProps] = useState({})
+  const [modals, setModals] = useState([])
+
+  const navigate = (s, props = {}) => { setScreen(s); setScreenProps(props) }
+  const openModal = (type, props = {}) => setModals(prev => [...prev, { type, props }])
+  const closeModal = () => setModals(prev => prev.slice(0, -1))
+
+  const screenMap = {
+    'home': HomeScreen,
+    'sleep-detail': SleepDetail,
+    'recovery-detail': RecoveryDetail,
+    'strain-detail': StrainDetail,
+    'journal': JournalScreen,
+    'fitness': FitnessScreen,
+    'biology': BiologyScreen,
+  }
+  const Screen = screenMap[screen] || HomeScreen
+
+  const modalMap = {
+    'primary-sleep': PrimarySleepModal,
+    'trend-detail': TrendDetailModal,
+    'workout-detail': WorkoutDetailModal,
+    'log': LogModal,
+  }
+
+  // Determine active tab
+  const activeTab = ['home', 'journal', 'fitness', 'biology'].includes(screen) ? screen : 'home'
 
   return (
-    <div style={{
-      maxWidth: 390, margin: '0 auto', height: '100dvh',
-      background: BG, display: 'flex', flexDirection: 'column',
-      position: 'relative', overflow: 'hidden',
-    }}>
-      <div style={{
-        flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch',
-        paddingBottom: `calc(83px + var(--safe-bottom))`,
-      }}>
-        {activeTab === 'home' && <Today />}
-        {activeTab === 'journal' && <Placeholder title="Journal" />}
-        {activeTab === 'fitness' && <Placeholder title="Fitness" />}
-        {activeTab === 'biology' && <Placeholder title="Biology" />}
+    <div style={{ maxWidth: 390, margin: '0 auto', background: BG, minHeight: '100vh', position: 'relative', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', color: TEXT, overflow: 'hidden' }}>
+      {/* Exit button */}
+      <button onClick={onExit} style={{ position: 'fixed', top: 12, right: 12, zIndex: 200, background: 'rgba(255,255,255,0.1)', border: 'none', color: TEXT2, fontSize: 12, padding: '6px 12px', borderRadius: 8, cursor: 'pointer' }}>✕ Exit</button>
+
+      {/* Main screen */}
+      <div style={{ paddingBottom: 83, minHeight: '100vh', overflowY: 'auto' }}>
+        <Screen navigate={navigate} openModal={openModal} {...screenProps} />
       </div>
 
       {/* Bottom tab bar */}
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0,
-        background: '#111111', borderTop: '1px solid #222',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-around',
-        paddingTop: 8, paddingBottom: `calc(8px + var(--safe-bottom))`,
-        height: `calc(83px + var(--safe-bottom))`,
-        zIndex: 50,
-      }}>
-        {tabs.map(tab => {
-          const isActive = tab.id === activeTab
-          const isAdd = tab.id === 'add'
-          if (isAdd) {
-            return (
-              <button key="add" style={{
-                width: 44, height: 44, borderRadius: 22,
-                background: '#333', border: 'none', color: TEXT,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                {tab.icon}
-              </button>
-            )
-          }
-          return (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
-              background: isActive ? '#2A2A2A' : 'none',
-              border: 'none', color: isActive ? TEXT : TEXT_SECONDARY,
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: isActive ? '8px 16px' : '8px 12px',
-              borderRadius: 20, fontSize: 12, fontWeight: 600,
-            }}>
-              {tab.icon}
-              {isActive && <span>{tab.label}</span>}
-            </button>
-          )
+      <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 390, height: 83, background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'space-around', paddingBottom: 16, boxShadow: '0 -2px 10px rgba(0,0,0,0.1)', zIndex: 100 }}>
+        {tabs.map((tab, i) => {
+          // Insert + button in the middle (after index 1, i.e., between fitness and biology... actually between journal and fitness positions)
+          // Actually the tabs are: Home, Journal, +, Fitness, Biology
+          // Let me put the + button between journal and fitness
+          return null // handled below
         })}
+        {/* Render: Home, Journal, +, Fitness, Biology */}
+        {[tabs[0], tabs[1]].map(tab => (
+          <button key={tab.id} onClick={() => navigate(tab.id)} style={{ background: activeTab === tab.id ? 'rgba(0,0,0,0.08)' : 'none', border: 'none', display: 'flex', flexDirection: activeTab === tab.id ? 'row' : 'column', alignItems: 'center', gap: activeTab === tab.id ? 6 : 2, padding: activeTab === tab.id ? '8px 16px' : '8px 12px', borderRadius: 18, cursor: 'pointer' }}>
+            <svg width={22} height={22} viewBox="0 0 24 24" fill={activeTab === tab.id ? '#000' : '#999'}><path d={tab.icon}/></svg>
+            {activeTab === tab.id && <span style={{ fontSize: 12, fontWeight: 600, color: '#000' }}>{tab.label}</span>}
+          </button>
+        ))}
+        {/* + button */}
+        <button onClick={() => openModal('log')} style={{ width: 48, height: 48, borderRadius: 24, background: '#000', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
+          <svg width={24} height={24} viewBox="0 0 24 24" fill="#FFF"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </button>
+        {[tabs[2], tabs[3]].map(tab => (
+          <button key={tab.id} onClick={() => navigate(tab.id)} style={{ background: activeTab === tab.id ? 'rgba(0,0,0,0.08)' : 'none', border: 'none', display: 'flex', flexDirection: activeTab === tab.id ? 'row' : 'column', alignItems: 'center', gap: activeTab === tab.id ? 6 : 2, padding: activeTab === tab.id ? '8px 16px' : '8px 12px', borderRadius: 18, cursor: 'pointer' }}>
+            <svg width={22} height={22} viewBox="0 0 24 24" fill={activeTab === tab.id ? '#000' : '#999'}><path d={tab.icon}/></svg>
+            {activeTab === tab.id && <span style={{ fontSize: 12, fontWeight: 600, color: '#000' }}>{tab.label}</span>}
+          </button>
+        ))}
       </div>
 
-      {onExit && (
-        <button onClick={onExit} style={{
-          position: 'fixed', top: 'calc(8px + var(--safe-top))', right: 8,
-          background: 'rgba(255,255,255,0.1)', border: 'none', color: '#888',
-          width: 32, height: 32, borderRadius: 16, fontSize: 16, zIndex: 200,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>✕</button>
-      )}
-    </div>
-  )
-}
-
-function Placeholder({ title }) {
-  return (
-    <div style={{ padding: '80px 20px', textAlign: 'center' }}>
-      <div style={{ fontSize: 24, fontWeight: 700, color: TEXT }}>{title}</div>
-      <div style={{ fontSize: 14, color: TEXT_SECONDARY, marginTop: 8 }}>Coming soon</div>
+      {/* Modal stack */}
+      {modals.map((modal, i) => {
+        const Modal = modalMap[modal.type]
+        if (!Modal) return null
+        return <Modal key={i} {...modal.props} closeModal={closeModal} openModal={openModal} navigate={navigate} />
+      })}
     </div>
   )
 }
