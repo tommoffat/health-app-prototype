@@ -1,188 +1,128 @@
-import React, { useState } from 'react';
-import TodayScreen from './Today';
-import SleepScreen from './Sleep';
-import ActivityScreen from './Activity';
-import BiometricsScreen from './Biometrics';
-import LogScreen from './Log';
-import ProgressScreen from './Progress';
-import ProfileScreen from './Profile';
+import React, { useState } from 'react'
+import Today from './Today'
+import Sleep from './Sleep'
+import Activity from './Activity'
+import Biometrics from './Biometrics'
+import Log from './Log'
+import Progress from './Progress'
+import Profile from './Profile'
 
-const HomeIcon = ({ color }) => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-    <polyline points="9 22 9 12 15 12 15 22" />
-  </svg>
-);
+const BG = '#F4F3EF'
 
-const JournalIcon = ({ color }) => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-    <line x1="8" y1="7" x2="16" y2="7" />
-    <line x1="8" y1="11" x2="14" y2="11" />
-  </svg>
-);
-
-const FitnessIcon = ({ color }) => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M18 20V10" /><path d="M12 20V4" /><path d="M6 20v-6" />
-  </svg>
-);
-
-const BiologyIcon = ({ color }) => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-  </svg>
-);
-
-const PlusIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round">
-    <line x1="12" y1="5" x2="12" y2="19" />
-    <line x1="5" y1="12" x2="19" y2="12" />
-  </svg>
-);
+const tabs = [
+  { id: 'today', label: 'Home',
+    icon: 'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z' },
+  { id: 'sleep', label: 'Journal',
+    icon: 'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z' },
+  { id: 'log', label: '', icon: 'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z', center: true },
+  { id: 'activity', label: 'Fitness',
+    icon: 'M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3A7.28 7.28 0 0018 12.5v-2h-2c-1.86-.64-3.42-1.4-4.5-2.5l-1.2-1.3c-.4-.4-1-.6-1.6-.6-.2 0-.3 0-.5.1L6 8.3V13h2V9.6l1.8-.7' },
+  { id: 'biometrics', label: 'Biology',
+    icon: 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' },
+]
 
 export default function BevelApp({ onExit }) {
-  const [screen, setScreen] = useState('today');
-  const [activeTab, setActiveTab] = useState('home');
-
-  const navigate = (s) => setScreen(s);
-
-  const handleTab = (tab) => {
-    setActiveTab(tab);
-    if (tab === 'home') setScreen('today');
-    else if (tab === 'journal') setScreen('log');
-    else if (tab === 'plus') setScreen('log');
-    else if (tab === 'fitness') setScreen('activity');
-    else if (tab === 'biology') setScreen('biometrics');
-  };
+  const [activeTab, setActiveTab] = useState('today')
+  const [subScreen, setSubScreen] = useState(null)
 
   const goBack = () => {
-    setScreen('today');
-    setActiveTab('home');
-  };
+    setSubScreen(null)
+    setActiveTab('today')
+  }
 
-  const showTabBar = ['today', 'log', 'activity', 'biometrics'].includes(screen);
+  const renderContent = () => {
+    if (subScreen === 'sleep-detail') return <Sleep onBack={goBack} />
+    if (subScreen === 'activity-detail') return <Activity onBack={goBack} />
+    if (subScreen === 'progress') return <Progress onBack={goBack} />
+    if (subScreen === 'profile') return <Profile onBack={goBack} onExit={onExit} />
 
-  const renderScreen = () => {
-    switch (screen) {
+    switch (activeTab) {
       case 'today':
-        return <TodayScreen onNavigate={navigate} />;
+        return (
+          <Today
+            onNavigate={(s) => {
+              if (s === 'sleep') setSubScreen('sleep-detail')
+              else if (s === 'activity') setSubScreen('activity-detail')
+              else if (s === 'progress') setSubScreen('progress')
+              else if (s === 'profile') setSubScreen('profile')
+            }}
+          />
+        )
       case 'sleep':
-        return <SleepScreen onBack={goBack} />;
-      case 'activity':
-        return <ActivityScreen onBack={activeTab === 'fitness' ? null : goBack} />;
-      case 'biometrics':
-        return <BiometricsScreen onBack={activeTab === 'biology' ? null : goBack} />;
+        return <Sleep onBack={() => setActiveTab('today')} />
       case 'log':
-        return <LogScreen />;
-      case 'progress':
-        return <ProgressScreen onBack={goBack} />;
-      case 'profile':
-        return <ProfileScreen onBack={goBack} onExit={onExit} />;
+        return <Log />
+      case 'activity':
+        return <Activity onBack={() => setActiveTab('today')} />
+      case 'biometrics':
+        return <Biometrics />
       default:
-        return <TodayScreen onNavigate={navigate} />;
+        return <Today onNavigate={() => {}} />
     }
-  };
-
-  const tabColor = (tab) => activeTab === tab ? '#1A1A1A' : '#8E8E93';
+  }
 
   return (
-    <div style={styles.shell}>
-      <div style={{ ...styles.content, paddingBottom: showTabBar ? 80 : 0 }}>
-        {renderScreen()}
+    <div style={{
+      background: BG, height: '100dvh', display: 'flex', flexDirection: 'column',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+      maxWidth: 430, margin: '0 auto', position: 'relative'
+    }}>
+      <div style={{
+        flex: 1, minHeight: 0, overflowY: 'auto',
+        WebkitOverflowScrolling: 'touch'
+      }}>
+        {renderContent()}
       </div>
-      {showTabBar && (
-        <div style={styles.tabBarOuter}>
-          <div style={styles.tabBar}>
-            <button style={styles.tabBtn} onClick={() => handleTab('home')}>
-              <HomeIcon color={tabColor('home')} />
-              <span style={{ ...styles.tabLabel, color: tabColor('home') }}>Home</span>
-            </button>
-            <button style={styles.tabBtn} onClick={() => handleTab('journal')}>
-              <JournalIcon color={tabColor('journal')} />
-              <span style={{ ...styles.tabLabel, color: tabColor('journal') }}>Journal</span>
-            </button>
-            <button style={styles.plusBtn} onClick={() => handleTab('plus')}>
-              <PlusIcon />
-            </button>
-            <button style={styles.tabBtn} onClick={() => handleTab('fitness')}>
-              <FitnessIcon color={tabColor('fitness')} />
-              <span style={{ ...styles.tabLabel, color: tabColor('fitness') }}>Fitness</span>
-            </button>
-            <button style={styles.tabBtn} onClick={() => handleTab('biology')}>
-              <BiologyIcon color={tabColor('biology')} />
-              <span style={{ ...styles.tabLabel, color: tabColor('biology') }}>Biology</span>
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
-const styles = {
-  shell: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100dvh',
-    overflow: 'hidden',
-    background: '#F8F8F8',
-    fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif",
-  },
-  content: {
-    flex: 1,
-    minHeight: 0,
-    overflowY: 'auto',
-    WebkitOverflowScrolling: 'touch',
-  },
-  tabBarOuter: {
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: '0 12px 10px 12px',
-    zIndex: 100,
-    pointerEvents: 'none',
-  },
-  tabBar: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    background: '#FFFFFF',
-    borderRadius: 28,
-    boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
-    padding: '6px 8px',
-    pointerEvents: 'auto',
-  },
-  tabBtn: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 2,
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    padding: '6px 12px',
-    WebkitTapHighlightColor: 'transparent',
-  },
-  tabLabel: {
-    fontSize: 10,
-    fontWeight: 500,
-    letterSpacing: 0.2,
-  },
-  plusBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    background: '#1A1A1A',
-    border: 'none',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-    WebkitTapHighlightColor: 'transparent',
-    flexShrink: 0,
-  },
-};
+      {/* Tab Bar */}
+      <div style={{
+        height: 83, background: '#FFFFFF',
+        boxShadow: '0 -1px 0 rgba(0,0,0,0.08)',
+        display: 'flex', alignItems: 'flex-start', justifyContent: 'space-around',
+        paddingTop: 8, paddingBottom: 'env(safe-area-inset-bottom)',
+        flexShrink: 0
+      }}>
+        {tabs.map(tab => {
+          const active = activeTab === tab.id && !subScreen
+          if (tab.center) return (
+            <button key={tab.id} onClick={() => { setSubScreen(null); setActiveTab('log') }} style={{
+              background: '#1A1A1A', borderRadius: 24, width: 48, height: 48,
+              border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', marginTop: -4
+            }}>
+              <svg width={24} height={24} viewBox="0 0 24 24" fill="white">
+                <path d={tab.icon} />
+              </svg>
+            </button>
+          )
+          return (
+            <button key={tab.id} onClick={() => { setSubScreen(null); setActiveTab(tab.id) }} style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
+              padding: '2px 8px'
+            }}>
+              {active ? (
+                <div style={{
+                  background: '#1A1A1A', borderRadius: 18, padding: '6px 14px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}>
+                  <svg width={20} height={20} viewBox="0 0 24 24" fill="white">
+                    <path d={tab.icon} />
+                  </svg>
+                </div>
+              ) : (
+                <svg width={24} height={24} viewBox="0 0 24 24" fill="#AAAAAA">
+                  <path d={tab.icon} />
+                </svg>
+              )}
+              <span style={{
+                fontSize: 10, color: active ? '#1A1A1A' : '#AAAAAA',
+                fontWeight: active ? '600' : '400'
+              }}>{tab.label}</span>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}

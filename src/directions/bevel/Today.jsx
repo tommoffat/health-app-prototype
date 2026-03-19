@@ -1,262 +1,229 @@
-import React from 'react';
-import { user, today } from '../../data/fake';
+import React from 'react'
+import { user, today } from '../../data/fake'
 
-const RingGauge = ({ size = 70, stroke = 7, value, max, color, label, onClick }) => {
-  const r = (size - stroke) / 2;
-  const circ = 2 * Math.PI * r;
-  const pct = Math.min(value / max, 1);
-  const offset = circ * (1 - pct);
+const BG = '#F4F3EF'
+const CARD_BG = '#FFFFFF'
+const TEXT_PRIMARY = '#1A1A1A'
+const TEXT_SECONDARY = '#888888'
+const TEXT_LIGHT = '#BBBBBB'
+const BORDER_LIGHT = '#E5E5E0'
+const STRAIN_COLOR = '#F0943A'
+const STRAIN_LIGHT = '#FDECD0'
+const RECOVERY_COLOR = '#4CAF50'
+const RECOVERY_LIGHT = '#E8E8E4'
+const SLEEP_COLOR = '#6B7FD7'
+const SLEEP_LIGHT = '#E0E0DC'
+const BLUE_STATUS = '#5B8DEF'
+const GREEN_STATUS = '#4CAF50'
+const ORANGE_STATUS = '#E8943A'
+const RED_STAT = '#E85740'
+const YELLOW_STAT = '#D4A030'
+
+function DashedRing({ value, max, color, trackColor, size = 110 }) {
+  const r = (size - 14) / 2
+  const circ = 2 * Math.PI * r
+  const pct = Math.min(value / max, 1)
+  const dashFilled = circ * pct
+  const dashEmpty = circ - dashFilled
+  const trackDash = '4 3'
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: onClick ? 'pointer' : 'default' }} onClick={onClick}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#E5E5EA" strokeWidth={stroke} />
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke}
-          strokeDasharray={circ} strokeDashoffset={offset}
-          strokeLinecap="round" transform={`rotate(-90 ${size / 2} ${size / 2})`} />
-        <text x={size / 2} y={size / 2} textAnchor="middle" dominantBaseline="central"
-          style={{ fontSize: 18, fontWeight: 700, fill: '#1A1A1A', fontFamily: "-apple-system, 'SF Pro Display', sans-serif" }}>
-          {Math.round(value)}%
-        </text>
-      </svg>
-      <span style={{ fontSize: 12, color: '#8E8E93', marginTop: 6, fontWeight: 500 }}>{label}</span>
-    </div>
-  );
-};
-
-export default function TodayScreen({ onNavigate }) {
-  const strainPct = Math.round(today.strain / 21 * 100);
-
-  return (
-    <div style={styles.container}>
-      {/* Header */}
-      <div style={styles.header}>
-        <div>
-          <div style={styles.dateText}>Today, March 19</div>
-        </div>
-        <div style={styles.avatar} onClick={() => onNavigate('profile')}>
-          <span style={styles.avatarText}>{user.initials}</span>
-        </div>
-      </div>
-
-      {/* Score Card */}
-      <div style={styles.scoreCard}>
-        <div style={styles.rings}>
-          <RingGauge size={80} stroke={8} value={strainPct} max={100} color="#FF8C42" label="Strain" onClick={() => onNavigate('activity')} />
-          <RingGauge size={80} stroke={8} value={today.readiness.score} max={100} color="#34C759" label="Recovery" onClick={() => onNavigate('biometrics')} />
-          <RingGauge size={80} stroke={8} value={today.sleep.score} max={100} color="#5856D6" label="Sleep" onClick={() => onNavigate('sleep')} />
-        </div>
-      </div>
-
-      {/* Coaching Card */}
-      <div style={styles.card}>
-        <div style={styles.cardLabel}>COACHING</div>
-        <div style={styles.coachText}>Your recovery is great. You can handle moderate training today.</div>
-      </div>
-
-      {/* Stress & Energy Row */}
-      <div style={styles.stressRow}>
-        <div style={styles.stressItem}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF3B30" stroke="none">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-          </svg>
-          <span style={styles.stressValue}>{today.readiness.restingHR}</span>
-          <span style={styles.stressUnit}>bpm</span>
-        </div>
-        <div style={{ flex: 1, marginLeft: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#FF8C42" stroke="none">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
-            <span style={{ fontSize: 12, color: '#8E8E93', fontWeight: 500 }}>Energy</span>
-          </div>
-          <div style={styles.energyTrack}>
-            <div style={{ ...styles.energyBar, width: `${today.readiness.score}%` }} />
-          </div>
-        </div>
-      </div>
-
-      {/* Metric Cards */}
-      <div style={styles.metricGrid}>
-        {[
-          { label: 'RHR', value: today.readiness.restingHR, unit: 'bpm', color: '#FF3B30' },
-          { label: 'HRV', value: today.readiness.hrv, unit: 'ms', color: '#34C759' },
-          { label: 'SpO2', value: today.readiness.spo2, unit: '%', color: '#5856D6' },
-          { label: 'Steps', value: today.activity.steps.toLocaleString(), unit: '', color: '#FF8C42' },
-          { label: 'Calories', value: today.activity.calories, unit: 'kcal', color: '#FF8C42' },
-          { label: 'Active Min', value: today.activity.activeMinutes, unit: 'min', color: '#FF8C42' },
-        ].map((m, i) => (
-          <div key={i} style={styles.metricCard}>
-            <div style={{ fontSize: 11, color: '#8E8E93', fontWeight: 500, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.5 }}>{m.label}</div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 3 }}>
-              <span style={{ fontSize: 24, fontWeight: 700, color: '#1A1A1A' }}>{m.value}</span>
-              {m.unit && <span style={{ fontSize: 12, color: '#8E8E93' }}>{m.unit}</span>}
-            </div>
-            <div style={{ width: '100%', height: 3, background: '#E5E5EA', borderRadius: 2, marginTop: 8 }}>
-              <div style={{ height: 3, borderRadius: 2, background: m.color, width: `${60 + Math.random() * 30}%` }} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Workout Card */}
-      <div style={styles.card}>
-        <div style={styles.cardLabel}>WORKOUT</div>
-        <div style={{ fontSize: 16, fontWeight: 600, color: '#1A1A1A', marginBottom: 8 }}>{today.workout.name}</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={styles.progressTrack}>
-            <div style={{ ...styles.progressBar, width: `${(today.workout.setsComplete / today.workout.setsTotal) * 100}%` }} />
-          </div>
-          <span style={{ fontSize: 13, color: '#8E8E93', whiteSpace: 'nowrap' }}>
-            {today.workout.setsComplete}/{today.workout.setsTotal} sets
-          </span>
-        </div>
-      </div>
-
-      {/* Insights */}
-      <div style={styles.card}>
-        <div style={styles.cardLabel}>INSIGHTS</div>
-        {today.insights.map((ins, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: i < today.insights.length - 1 ? 12 : 0 }}>
-            <div style={{ width: 6, height: 6, borderRadius: 3, background: '#34C759', marginTop: 6, flexShrink: 0 }} />
-            <span style={{ fontSize: 14, color: '#1A1A1A', lineHeight: 1.4 }}>{ins}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Upcoming */}
-      <div style={{ ...styles.card, marginBottom: 24 }}>
-        <div style={styles.cardLabel}>UPCOMING</div>
-        {today.upcoming.map((ev, i) => (
-          <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < today.upcoming.length - 1 ? '1px solid #F0F0F0' : 'none' }}>
-            <span style={{ fontSize: 14, color: '#1A1A1A' }}>{ev.label}</span>
-            <span style={{ fontSize: 13, color: '#8E8E93' }}>{ev.time}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: 'rotate(-90deg)' }}>
+      <circle cx={size / 2} cy={size / 2} r={r}
+        fill="none" stroke={trackColor} strokeWidth={8}
+        strokeDasharray={trackDash}
+        strokeLinecap="round"
+      />
+      <circle cx={size / 2} cy={size / 2} r={r}
+        fill="none" stroke={color} strokeWidth={9}
+        strokeDasharray={`${dashFilled} ${dashEmpty}`}
+        strokeLinecap="round"
+      />
+    </svg>
+  )
 }
 
-const styles = {
-  container: {
-    padding: '16px 16px 0 16px',
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-    paddingTop: 8,
-  },
-  dateText: {
-    fontSize: 28,
-    fontWeight: 700,
-    color: '#1A1A1A',
-    letterSpacing: -0.5,
-  },
-  avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    background: '#1A1A1A',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-  },
-  avatarText: {
-    fontSize: 12,
-    fontWeight: 600,
-    color: '#FFFFFF',
-  },
-  scoreCard: {
-    background: '#FFFFFF',
-    borderRadius: 20,
-    padding: 24,
-    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-    marginBottom: 12,
-  },
-  rings: {
-    display: 'flex',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  card: {
-    background: '#FFFFFF',
-    borderRadius: 16,
-    padding: 18,
-    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-    marginBottom: 12,
-  },
-  cardLabel: {
-    fontSize: 11,
-    fontWeight: 600,
-    color: '#8E8E93',
-    letterSpacing: 1,
-    marginBottom: 10,
-  },
-  coachText: {
-    fontSize: 15,
-    color: '#1A1A1A',
-    lineHeight: 1.5,
-  },
-  stressRow: {
-    display: 'flex',
-    alignItems: 'center',
-    background: '#FFFFFF',
-    borderRadius: 16,
-    padding: '14px 18px',
-    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-    marginBottom: 12,
-  },
-  stressItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 6,
-  },
-  stressValue: {
-    fontSize: 18,
-    fontWeight: 700,
-    color: '#1A1A1A',
-  },
-  stressUnit: {
-    fontSize: 12,
-    color: '#8E8E93',
-  },
-  energyTrack: {
-    height: 6,
-    background: '#E5E5EA',
-    borderRadius: 3,
-    marginTop: 6,
-    overflow: 'hidden',
-  },
-  energyBar: {
-    height: 6,
-    background: 'linear-gradient(90deg, #FF8C42, #34C759)',
-    borderRadius: 3,
-  },
-  metricGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr',
-    gap: 10,
-    marginBottom: 12,
-  },
-  metricCard: {
-    background: '#FFFFFF',
-    borderRadius: 14,
-    padding: 14,
-    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-  },
-  progressTrack: {
-    flex: 1,
-    height: 6,
-    background: '#E5E5EA',
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  progressBar: {
-    height: 6,
-    background: '#FF8C42',
-    borderRadius: 3,
-  },
-};
+function SemiCircleGauge({ value, color }) {
+  const fillPct = value / 100
+  return (
+    <svg width={100} height={56} viewBox="0 0 100 56">
+      <path d="M 5 50 A 45 45 0 0 1 95 50" fill="none" stroke="#E5E5E0" strokeWidth={8} strokeLinecap="round" />
+      <path d="M 5 50 A 45 45 0 0 1 95 50" fill="none" stroke={color} strokeWidth={9} strokeLinecap="round"
+        strokeDasharray={`${141.3 * fillPct} 141.3`} />
+      <text x="50" y="44" textAnchor="middle" fontSize="20" fontWeight="700" fill={TEXT_PRIMARY}>{value}</text>
+      <text x="50" y="56" textAnchor="middle" fontSize="10" fill={color}>Med</text>
+    </svg>
+  )
+}
+
+export default function TodayScreen({ onNavigate }) {
+  const strainPct = Math.round(today.strain / 21 * 100)
+
+  return (
+    <div style={{ padding: '16px 16px 24px' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 8, marginBottom: 20 }}>
+        <div style={{ fontSize: 32, fontWeight: 700, color: TEXT_PRIMARY, letterSpacing: -0.5 }}>
+          March 19, 2026 <span style={{ color: TEXT_LIGHT, fontSize: 20 }}></span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={TEXT_SECONDARY} strokeWidth={2}>
+            <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" strokeLinecap="round" strokeLinejoin="round" />
+            <polyline points="16 6 12 2 8 6" strokeLinecap="round" strokeLinejoin="round" />
+            <line x1="12" y1="2" x2="12" y2="15" strokeLinecap="round" />
+          </svg>
+          <div onClick={() => onNavigate('profile')} style={{
+            width: 36, height: 36, borderRadius: 18, background: '#B8C4DB',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
+          }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: TEXT_PRIMARY }}>{user.initials}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Status pills */}
+      <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
+        <div style={{
+          background: CARD_BG, borderRadius: 24, height: 44, padding: '8px 14px',
+          display: 'flex', alignItems: 'center', gap: 8
+        }}>
+          <div style={{ width: 28, height: 28, borderRadius: 14, background: '#E8F5E9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width={14} height={14} viewBox="0 0 24 24" fill={GREEN_STATUS}>
+              <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3A7.28 7.28 0 0018 12.5v-2h-2c-1.86-.64-3.42-1.4-4.5-2.5l-1.2-1.3c-.4-.4-1-.6-1.6-.6-.2 0-.3 0-.5.1L6 8.3V13h2V9.6l1.8-.7" />
+            </svg>
+          </div>
+          <span style={{ fontSize: 15, fontWeight: 600, color: TEXT_PRIMARY }}>Active</span>
+          <svg width={12} height={12} viewBox="0 0 24 24" fill={TEXT_LIGHT}><path d="M7 10l5 5 5-5z" /></svg>
+        </div>
+        <div style={{
+          background: CARD_BG, borderRadius: 24, height: 44, padding: '8px 14px',
+          display: 'flex', alignItems: 'center', gap: 8
+        }}>
+          <div style={{ width: 28, height: 28, borderRadius: 14, background: '#E8EEF8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width={13} height={13} viewBox="0 0 24 24" fill={BLUE_STATUS}>
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+            </svg>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span style={{ fontSize: 14, fontWeight: 600, color: TEXT_PRIMARY }}>&mdash; &deg;F</span>
+            <span style={{ fontSize: 10, color: TEXT_SECONDARY }}>No location</span>
+          </div>
+          <svg width={12} height={12} viewBox="0 0 24 24" fill={TEXT_LIGHT}><path d="M7 10l5 5 5-5z" /></svg>
+        </div>
+      </div>
+
+      {/* Main metrics card */}
+      <div style={{
+        background: CARD_BG, borderRadius: 20, padding: 20, marginBottom: 12,
+        boxShadow: '0 2px 12px rgba(0,0,0,0.04)'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', marginBottom: 20 }}>
+          {/* Strain */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}
+            onClick={() => onNavigate('activity')}>
+            <div style={{ position: 'relative', width: 110, height: 110 }}>
+              <DashedRing value={today.strain} max={21} color={STRAIN_COLOR} trackColor={STRAIN_LIGHT} />
+              <div style={{ position: 'absolute', top: 0, left: 0, width: 110, height: 110, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: 26, fontWeight: 700, color: TEXT_PRIMARY }}>{strainPct}%</span>
+              </div>
+            </div>
+            <span style={{ fontSize: 13, color: TEXT_SECONDARY, marginTop: 6, fontWeight: 500 }}>Strain</span>
+          </div>
+          {/* Recovery */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}
+            onClick={() => onNavigate('biometrics')}>
+            <div style={{ position: 'relative', width: 110, height: 110 }}>
+              <DashedRing value={today.readiness.score} max={100} color={RECOVERY_COLOR} trackColor={RECOVERY_LIGHT} />
+              <div style={{ position: 'absolute', top: 0, left: 0, width: 110, height: 110, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: 26, fontWeight: 700, color: TEXT_PRIMARY }}>{today.readiness.score}%</span>
+              </div>
+            </div>
+            <span style={{ fontSize: 13, color: TEXT_SECONDARY, marginTop: 6, fontWeight: 500 }}>Recovery</span>
+          </div>
+          {/* Sleep */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}
+            onClick={() => onNavigate('sleep')}>
+            <div style={{ position: 'relative', width: 110, height: 110 }}>
+              <DashedRing value={today.sleep.score} max={100} color={SLEEP_COLOR} trackColor={SLEEP_LIGHT} />
+              <div style={{ position: 'absolute', top: 0, left: 0, width: 110, height: 110, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: 26, fontWeight: 700, color: TEXT_PRIMARY }}>{today.sleep.score}%</span>
+              </div>
+            </div>
+            <span style={{ fontSize: 13, color: TEXT_SECONDARY, marginTop: 6, fontWeight: 500 }}>Sleep</span>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div style={{ height: 1, background: BORDER_LIGHT, marginBottom: 16 }} />
+
+        {/* Coaching */}
+        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, color: '#AAAAAA', marginBottom: 10 }}>COACHING</div>
+        <div style={{ fontSize: 15, color: '#333333', lineHeight: 1.5 }}>
+          Your recovery is excellent today! HRV is trending up 12% this week. Focus on Zone 2 training.
+        </div>
+      </div>
+
+      {/* Stress & Energy section */}
+      <div style={{ fontSize: 22, fontWeight: 700, color: TEXT_PRIMARY, marginTop: 24, marginBottom: 14 }}>Stress & Energy</div>
+
+      {/* Stress card */}
+      <div style={{
+        background: CARD_BG, borderRadius: 20, padding: 20, marginBottom: 12,
+        boxShadow: '0 2px 12px rgba(0,0,0,0.04)'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 8, height: 8, borderRadius: 4, background: GREEN_STATUS }} />
+            <div>
+              <div style={{ fontSize: 17, fontWeight: 700, color: TEXT_PRIMARY }}>Today's stress</div>
+              <div style={{ fontSize: 13, color: TEXT_SECONDARY, marginTop: 2 }}>Last updated 10:54 PM</div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <SemiCircleGauge value={40} color={ORANGE_STATUS} />
+            <svg width={16} height={16} viewBox="0 0 24 24" fill={TEXT_LIGHT}><path d="M7 10l5 5 5-5z" /></svg>
+          </div>
+        </div>
+
+        {/* 3 stat row */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ flex: 1, textAlign: 'center' }}>
+            <div style={{ fontSize: 24, fontWeight: 700, color: RED_STAT }}>100</div>
+            <div style={{ fontSize: 12, color: TEXT_SECONDARY, marginTop: 2 }}>Highest</div>
+          </div>
+          <div style={{ width: 1, height: 36, background: BORDER_LIGHT }} />
+          <div style={{ flex: 1, textAlign: 'center' }}>
+            <div style={{ fontSize: 24, fontWeight: 700, color: GREEN_STATUS }}>2</div>
+            <div style={{ fontSize: 12, color: TEXT_SECONDARY, marginTop: 2 }}>Lowest</div>
+          </div>
+          <div style={{ width: 1, height: 36, background: BORDER_LIGHT }} />
+          <div style={{ flex: 1, textAlign: 'center' }}>
+            <div style={{ fontSize: 24, fontWeight: 700, color: YELLOW_STAT }}>40</div>
+            <div style={{ fontSize: 12, color: TEXT_SECONDARY, marginTop: 2 }}>Average</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Energy bar card */}
+      <div style={{
+        background: CARD_BG, borderRadius: 20, padding: 20, marginBottom: 12,
+        boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
+        display: 'flex', alignItems: 'center', gap: 14
+      }}>
+        <span style={{ fontSize: 22 }}>&#9889;</span>
+        <div style={{ flex: 1, display: 'flex', gap: 1 }}>
+          {Array.from({ length: 40 }, (_, i) => {
+            const filled = i < Math.round(0.72 * 40)
+            return (
+              <div key={i} style={{
+                width: 3, height: 10, borderRadius: 1,
+                background: filled ? '#E8B830' : '#E5E5E0'
+              }} />
+            )
+          })}
+        </div>
+        <span style={{ fontSize: 16, fontWeight: 600, color: TEXT_PRIMARY }}>72%</span>
+      </div>
+    </div>
+  )
+}
