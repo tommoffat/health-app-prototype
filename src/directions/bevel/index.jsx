@@ -7,7 +7,7 @@ import Log from './Log'
 import Progress from './Progress'
 import Profile from './Profile'
 
-const BG = '#F4F3EF'
+const BG = '#F5F3EE'
 
 const tabs = [
   { id: 'today', label: 'Home',

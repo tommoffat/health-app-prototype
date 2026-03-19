@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { weeklySleep, weeklyActivity, weeklyHRV, weeklyWeight } from '../../data/fake'
 
-const BG = '#F4F3EF'
+const BG = '#F5F3EE'
 const TEXT_PRIMARY = '#1A1A1A'
 const TEXT_SECONDARY = '#888888'
 const BORDER_LIGHT = '#E5E5E0'

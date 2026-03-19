@@ -1,7 +1,7 @@
 import React from 'react'
 import { today } from '../../data/fake'
 
-const BG = '#F4F3EF'
+const BG = '#F5F3EE'
 const TEXT_PRIMARY = '#1A1A1A'
 const TEXT_SECONDARY = '#888888'
 const BLUE_STATUS = '#5B8DEF'
