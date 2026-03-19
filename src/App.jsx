@@ -1,145 +1,95 @@
 import './index.css'
 import { useState } from 'react'
-import { ThemeContext, themes } from './themes'
-import TodayScreen from './screens/TodayScreen'
-import SleepScreen from './screens/SleepScreen'
-import ActivityScreen from './screens/ActivityScreen'
-import BiometricsScreen from './screens/BiometricsScreen'
-import LogScreen from './screens/LogScreen'
-import ProgressScreen from './screens/ProgressScreen'
-import ProfileScreen from './screens/ProfileScreen'
 
-const TABS = [
-  { id: 'today', label: 'Today', icon: '🏠' },
-  { id: 'sleep', label: 'Sleep', icon: '😴' },
-  { id: 'move', label: 'Move', icon: '⚡' },
-  { id: 'data', label: 'Data', icon: '📊' },
-  { id: 'me', label: 'Me', icon: '👤' },
-];
+import ObsidianApp from './directions/obsidian/index'
+import SolsticeApp from './directions/solstice/index'
+import VoltageApp from './directions/voltage/index'
+import MeridianApp from './directions/meridian/index'
+import AuraApp from './directions/aura/index'
+import BevelApp from './directions/bevel/index'
+import OuraApp from './directions/oura/index'
+import HybridApp from './directions/hybrid/index'
+
+const DIRECTIONS = [
+  { id: 'obsidian', name: 'Obsidian', tagline: 'Bloomberg terminal meets fitness', colors: ['#7C6EFA', '#000000'], component: ObsidianApp },
+  { id: 'solstice', name: 'Solstice', tagline: 'Warm editorial wellness journal', colors: ['#D4845A', '#1A1410'], component: SolsticeApp },
+  { id: 'voltage', name: 'Voltage', tagline: 'Gym energy dashboard', colors: ['#CCFF00', '#0A0A00'], component: VoltageApp },
+  { id: 'meridian', name: 'Meridian', tagline: 'iOS-native precision', colors: ['#007AFF', '#F2F2F7'], component: MeridianApp },
+  { id: 'aura', name: 'Aura', tagline: 'Luxury spa aurora borealis', colors: ['#C9A96E', '#0D1117'], component: AuraApp },
+  { id: 'bevel', name: 'Bevel', tagline: 'Strain recovery sleep system', colors: ['#FF6B35', '#0F0F0F'], component: BevelApp },
+  { id: 'oura', name: 'Oura', tagline: 'Circular ring scores', colors: ['#E8A04B', '#0B0E13'], component: OuraApp },
+  { id: 'hybrid', name: 'Hybrid', tagline: 'Oura rings in Bevel cards', colors: ['#E8A04B', '#0F1218'], component: HybridApp },
+]
 
 export default function App() {
-  const [currentTheme, setCurrentTheme] = useState(themes[0]);
-  const [activeTab, setActiveTab] = useState('today');
-  const [subScreen, setSubScreen] = useState(null); // 'log' | 'progress'
+  const [activeDirection, setActiveDirection] = useState(null)
 
-  const renderScreen = () => {
-    if (subScreen === 'log') return <LogScreen />;
-    if (subScreen === 'progress') return <ProgressScreen onBack={() => setSubScreen(null)} />;
-
-    switch (activeTab) {
-      case 'today': return <TodayScreen />;
-      case 'sleep': return <SleepScreen />;
-      case 'move': return <ActivityScreen />;
-      case 'data': return <BiometricsScreen />;
-      case 'me': return (
-        <ProfileScreen
-          currentTheme={currentTheme}
-          onThemeChange={setCurrentTheme}
-          onShowProgress={() => setSubScreen('progress')}
-        />
-      );
-      default: return <TodayScreen />;
-    }
-  };
+  if (activeDirection) {
+    const dir = DIRECTIONS.find(d => d.id === activeDirection)
+    const DirectionComponent = dir.component
+    return <DirectionComponent onExit={() => setActiveDirection(null)} />
+  }
 
   return (
-    <ThemeContext.Provider value={currentTheme}>
+    <div style={{
+      maxWidth: '390px',
+      margin: '0 auto',
+      minHeight: '100dvh',
+      background: '#0A0A0F',
+      padding: '20px',
+      overflowY: 'auto',
+    }}>
+      <h1 style={{
+        color: '#FFFFFF',
+        fontSize: '24px',
+        fontWeight: '700',
+        textAlign: 'center',
+        marginBottom: '6px',
+        marginTop: '40px',
+      }}>Health App v2  🦉</h1>
+      <p style={{
+        color: '#888',
+        fontSize: '13px',
+        textAlign: 'center',
+        marginBottom: '28px',
+      }}>Choose a design direction</p>
+
       <div style={{
-        maxWidth: '390px',
-        margin: '0 auto',
-        height: '100dvh',
-        display: 'flex',
-        flexDirection: 'column',
-        background: currentTheme.colors.bg,
-        position: 'relative',
-        overflow: 'hidden',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '12px',
       }}>
-        {/* Scrollable content area */}
-        <div style={{
-          flex: 1,
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          paddingTop: '52px',
-          paddingBottom: '90px',
-          paddingLeft: '20px',
-          paddingRight: '20px',
-          WebkitOverflowScrolling: 'touch',
-        }}>
-          {renderScreen()}
-        </div>
-
-        {/* FAB for Log */}
-        {!subScreen && activeTab === 'data' && (
+        {DIRECTIONS.map(dir => (
           <button
-            onClick={() => setSubScreen('log')}
+            key={dir.id}
+            onClick={() => setActiveDirection(dir.id)}
             style={{
-              position: 'absolute',
-              bottom: '90px',
-              right: '20px',
-              width: '56px',
-              height: '56px',
-              borderRadius: '28px',
-              background: currentTheme.colors.accent,
-              border: 'none',
-              fontSize: '24px',
-              cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              background: '#141418',
+              border: '1px solid #2A2A35',
+              borderRadius: '16px',
+              padding: '20px 16px',
+              textAlign: 'left',
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 10,
+              flexDirection: 'column',
+              gap: '8px',
+              transition: 'transform 0.15s',
             }}
-          >📝</button>
-        )}
-
-        {/* Bottom Tab Bar */}
-        <div style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          background: currentTheme.colors.surface,
-          borderTop: `1px solid ${currentTheme.colors.border}`,
-          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-          backdropFilter: 'blur(20px)',
-          zIndex: 20,
-        }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-around',
-            padding: '8px 0 6px',
-          }}>
-            {TABS.map(tab => {
-              const isActive = !subScreen && activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => { setActiveTab(tab.id); setSubScreen(null); }}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '2px',
-                    padding: '4px 12px',
-                    minWidth: '52px',
-                  }}
-                >
-                  <span style={{ fontSize: '22px', opacity: isActive ? 1 : 0.5 }}>{tab.icon}</span>
-                  <span style={{
-                    fontFamily: currentTheme.fonts.body,
-                    fontSize: '10px',
-                    color: isActive ? currentTheme.colors.accent : currentTheme.colors.textSecondary,
-                    fontWeight: isActive ? '600' : '400',
-                  }}>{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+            onMouseDown={e => e.currentTarget.style.transform = 'scale(0.96)'}
+            onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            <div style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '12px',
+              background: `linear-gradient(135deg, ${dir.colors[0]}, ${dir.colors[1]})`,
+              border: `2px solid ${dir.colors[0]}33`,
+            }} />
+            <span style={{ color: '#FFF', fontSize: '16px', fontWeight: '600' }}>{dir.name}</span>
+            <span style={{ color: '#777', fontSize: '11px', lineHeight: '1.3' }}>{dir.tagline}</span>
+          </button>
+        ))}
       </div>
-    </ThemeContext.Provider>
-  );
+    </div>
+  )
 }
