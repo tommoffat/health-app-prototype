@@ -38,27 +38,43 @@ function Sparkline({ data, color, width = 120, height = 36 }) {
   );
 }
 
-function VitalCard({ label, value, unit, data, color, trend }) {
+function VitalCard({ label, value, unit, data, color, trend, compact }) {
   return (
     <div style={{
-      background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 18,
+      background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14,
+      padding: compact ? 14 : 18,
     }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+      <div style={{
+        display: 'flex',
+        flexDirection: compact ? 'column' : 'row',
+        justifyContent: compact ? 'flex-start' : 'space-between',
+        alignItems: compact ? 'stretch' : 'flex-start',
+        gap: compact ? 10 : 0,
+      }}>
         <div>
           <div style={{ color: c.secondary, fontSize: 12, marginBottom: 4 }}>{label}</div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-            <span style={{ color: c.text, fontSize: 28, fontWeight: 700 }}>{value}</span>
+            <span style={{ color: c.text, fontSize: compact ? 22 : 28, fontWeight: 700 }}>{value}</span>
             <span style={{ color: c.secondary, fontSize: 13 }}>{unit}</span>
           </div>
           {trend && (
-            <div style={{ color: trend.startsWith('+') ? '#4ADE80' : trend.startsWith('-') ? '#F87171' : c.secondary, fontSize: 12, marginTop: 2 }}>
+            <div style={{ color: trend.startsWith('+') ? '#4ADE80' : trend.startsWith('-') ? '#F87171' : c.secondary, fontSize: 11, marginTop: 2 }}>
               {trend} vs last week
             </div>
           )}
         </div>
-        <Sparkline data={data} color={color} />
+        <Sparkline data={data} color={color} width={compact ? 100 : 120} height={compact ? 30 : 36} />
       </div>
     </div>
+  );
+}
+
+function SectionHeader({ children }) {
+  return (
+    <div style={{
+      color: c.secondary, fontSize: 11, fontWeight: 600, textTransform: 'uppercase',
+      letterSpacing: 1.2, margin: '20px 0 10px',
+    }}>{children}</div>
   );
 }
 
@@ -77,15 +93,22 @@ export default function Biometrics() {
         {today.date} &middot; Updated just now
       </p>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        <VitalCard
-          label="Heart Rate Variability"
-          value={today.readiness.hrv}
-          unit="ms"
-          data={weeklyHRV}
-          color={c.sleep}
-          trend="+8%"
-        />
+      {/* Primary metric — full width */}
+      <SectionHeader>Primary</SectionHeader>
+      <VitalCard
+        label="Heart Rate Variability"
+        value={today.readiness.hrv}
+        unit="ms"
+        data={weeklyHRV}
+        color={c.sleep}
+        trend="+8%"
+      />
+
+      {/* Secondary vitals — 2-column grid */}
+      <SectionHeader>Vitals</SectionHeader>
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10,
+      }}>
         <VitalCard
           label="Resting Heart Rate"
           value={today.readiness.restingHR}
@@ -93,22 +116,25 @@ export default function Biometrics() {
           data={weeklyRHR}
           color={c.activity}
           trend="-2 bpm"
+          compact
         />
         <VitalCard
-          label="Blood Oxygen (SpO2)"
+          label="Blood Oxygen"
           value={today.readiness.spo2}
           unit="%"
           data={weeklySpo2}
           color="#4ADE80"
           trend="stable"
+          compact
         />
         <VitalCard
-          label="Body Temperature"
+          label="Body Temp"
           value={today.readiness.bodyTemp}
           unit=""
           data={weeklyTemp}
           color={c.accent}
-          trend="+0.1\u00B0F"
+          trend={"+0.1\u00B0F"}
+          compact
         />
         <VitalCard
           label="Weight"
@@ -117,6 +143,7 @@ export default function Biometrics() {
           data={weeklyWeight}
           color="#A78BFA"
           trend="-0.8 lbs"
+          compact
         />
       </div>
     </div>

@@ -68,7 +68,7 @@ const styles = {
   shell: {
     display: 'flex',
     flexDirection: 'column',
-    height: '100vh',
+    height: '100dvh',
     width: '100vw',
     background: '#000000',
     color: '#FFFFFF',
@@ -78,6 +78,7 @@ const styles = {
   },
   content: {
     flex: 1,
+    minHeight: 0,
     overflowY: 'auto',
     overflowX: 'hidden',
     WebkitOverflowScrolling: 'touch',

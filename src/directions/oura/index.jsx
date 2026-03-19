@@ -63,12 +63,12 @@ export default function OuraDirection({ onExit }) {
 
   return (
     <div style={{
-      height: '100vh', display: 'flex', flexDirection: 'column',
+      height: '100dvh', display: 'flex', flexDirection: 'column',
       background: c.bg, overflow: 'hidden',
       fontFamily: '-apple-system, SF Pro Display, system-ui, sans-serif',
     }}>
       {/* Content area */}
-      <div style={{ flex: 1, overflow: 'auto' }}>
+      <div style={{ flex: 1, minHeight: 0, overflow: 'auto', WebkitOverflowScrolling: 'touch' }}>
         {screen === 'today' && <Today onNavigate={handleNavigate} />}
         {screen === 'sleep' && <Sleep onBack={handleBack} />}
         {screen === 'activity' && <Activity onBack={handleBack} />}

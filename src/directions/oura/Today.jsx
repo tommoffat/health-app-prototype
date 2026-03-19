@@ -1,5 +1,5 @@
 import React from 'react';
-import { today } from '../../data/fake.js';
+import { today, user } from '../../data/fake.js';
 
 const c = {
   bg: '#0B0E13',
@@ -54,6 +54,7 @@ function InsightCard({ text }) {
   return (
     <div style={{
       background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14,
+      borderLeft: '3px solid #E8A04B',
       padding: '16px 18px', display: 'flex', alignItems: 'flex-start', gap: 12,
     }}>
       <span style={{ fontSize: 18, marginTop: 1 }}>&#9679;</span>
@@ -74,10 +75,7 @@ export default function Today({ onNavigate }) {
       {/* Greeting */}
       <div style={{ textAlign: 'center', marginBottom: 8 }}>
         <p style={{ color: c.secondary, fontSize: 15, margin: 0 }}>
-          {greeting}, Tom.
-        </p>
-        <p style={{ color: c.text, fontSize: 14, margin: '4px 0 0', fontWeight: 500 }}>
-          Your Readiness Score
+          {greeting}, {user.name}. Here's your readiness.
         </p>
       </div>
 
@@ -97,7 +95,7 @@ export default function Today({ onNavigate }) {
       }}>
         <ScoreRing
           score={today.sleep.score}
-          size={90}
+          size={80}
           color={c.sleep}
           strokeWidth={7}
           label="Sleep"
@@ -105,7 +103,7 @@ export default function Today({ onNavigate }) {
         />
         <ScoreRing
           score={today.activity.score}
-          size={90}
+          size={80}
           color={c.activity}
           strokeWidth={7}
           label="Activity"

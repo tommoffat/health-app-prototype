@@ -1,170 +1,231 @@
 import React from 'react';
-import { today, weeklySleep, weeklyHRV } from '../../data/fake';
+import { today, weeklySleep } from '../../data/fake';
 
-const PURPLE = '#9B59B6';
-const CORAL = '#FF6B35';
-const TEAL = '#4ECDC4';
-const BG = '#0F0F0F';
-const SURFACE = '#1A1A1A';
-const SURFACE2 = '#222222';
-const WHITE = '#FFFFFF';
-const GRAY = '#999999';
-
-const s = today.sleep;
-
-const stages = [
-  { label: 'Deep', duration: s.deep, color: '#6C3483', pct: 24 },
-  { label: 'REM', duration: s.rem, color: PURPLE, pct: 27 },
-  { label: 'Light', duration: s.light, color: '#BB8FCE', pct: 43 },
-  { label: 'Awake', duration: s.awake, color: '#E74C3C', pct: 6 },
-];
-
-const stats = [
-  { label: 'Total Sleep', value: s.total },
-  { label: 'Efficiency', value: `${s.efficiency}%` },
-  { label: 'Latency', value: `${s.latency} min` },
-  { label: 'Resting HR', value: `${s.restingHR} bpm` },
-  { label: 'HRV', value: `${s.hrv} ms` },
-  { label: 'SpO2', value: `${today.readiness.spo2}%` },
-];
-
-const recommendations = [
-  'Maintain your 10:30 PM bedtime for optimal recovery',
-  'Deep sleep is 24% of total — within ideal range',
-  'HRV trending upward this week, keep it up',
-];
-
-function SleepStagesChart() {
-  const W = 320, H = 140, pad = 40;
-  const stageMap = { deep: 0, rem: 1, light: 2, awake: 3 };
-  const colors = ['#6C3483', PURPLE, '#BB8FCE', '#E74C3C'];
-  const labels = ['Deep', 'REM', 'Light', 'Awake'];
-  // Simulated hypnogram data
-  const data = [2, 2, 1, 3, 2, 1, 0, 0, 1, 2, 1, 0, 1, 2, 2, 3, 1, 0, 0, 1, 2, 2, 1, 3];
-  const segW = (W - pad) / data.length;
-
-  return (
-    <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ display: 'block' }}>
-      {labels.map((l, i) => (
-        <text key={i} x={2} y={20 + i * 32} fill={GRAY} fontSize="9" fontWeight="600">{l}</text>
-      ))}
-      {data.map((stage, i) => (
-        <rect key={i} x={pad + i * segW} y={6 + stage * 32} width={segW - 1} height={26}
-          rx={3} fill={colors[stage]} opacity={0.8} />
-      ))}
-    </svg>
-  );
-}
-
-function WeeklyChart({ data, color, label }) {
-  const W = 320, H = 100;
-  const min = Math.min(...data) - 5;
-  const max = Math.max(...data) + 5;
-  const range = max - min;
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const points = data.map((v, i) => ({
-    x: 30 + (i / (data.length - 1)) * (W - 50),
-    y: 10 + (1 - (v - min) / range) * (H - 30)
-  }));
-  const line = points.map(p => `${p.x},${p.y}`).join(' ');
-  const area = `${points[0].x},${H - 15} ${line} ${points[points.length - 1].x},${H - 15}`;
-
-  return (
-    <div style={{ background: SURFACE, borderRadius: 16, padding: '16px 12px', marginBottom: 12, borderTop: `2px solid ${SURFACE2}` }}>
-      <div style={{ color: GRAY, fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>{label}</div>
-      <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ display: 'block' }}>
-        <defs>
-          <linearGradient id={`sleepGrad-${label}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color} stopOpacity="0.3" />
-            <stop offset="100%" stopColor={color} stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <polygon points={area} fill={`url(#sleepGrad-${label})`} />
-        <polyline points={line} fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-        {points.map((p, i) => (
-          <g key={i}>
-            <circle cx={p.x} cy={p.y} r={i === data.length - 1 ? 5 : 3} fill={i === data.length - 1 ? color : SURFACE} stroke={color} strokeWidth="2" />
-            <text x={p.x} y={H - 2} fill={GRAY} fontSize="8" textAnchor="middle" fontWeight="600">{days[i]}</text>
-          </g>
-        ))}
-      </svg>
-    </div>
-  );
-}
+const BackArrow = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="15 18 9 12 15 6" />
+  </svg>
+);
 
 export default function SleepScreen({ onBack }) {
+  const s = today.sleep;
+  const r = 44;
+  const stroke = 9;
+  const circ = 2 * Math.PI * r;
+  const pct = s.score / 100;
+  const offset = circ * (1 - pct);
+  const ringSize = 100;
+
+  const stages = [
+    { label: 'Deep', time: s.deep, color: '#3634A3', pct: 23 },
+    { label: 'REM', time: s.rem, color: '#5856D6', pct: 27 },
+    { label: 'Light', time: s.light, color: '#A5A4F3', pct: 43 },
+    { label: 'Awake', time: s.awake, color: '#E5E5EA', pct: 7 },
+  ];
+
+  const stats = [
+    { label: 'Efficiency', value: `${s.efficiency}%` },
+    { label: 'Latency', value: `${s.latency} min` },
+    { label: 'Resting HR', value: `${s.restingHR} bpm` },
+    { label: 'HRV', value: `${s.hrv} ms` },
+    { label: 'SpO2', value: `${today.readiness.spo2}%` },
+  ];
+
+  const maxSleep = Math.max(...weeklySleep);
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
   return (
-    <div style={{ background: BG, minHeight: '100%', paddingBottom: 100 }}>
-      {/* Header */}
-      <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div onClick={onBack} style={{ color: GRAY, fontSize: 24, cursor: 'pointer', lineHeight: 1 }}>&#8592;</div>
-        <div style={{ color: GRAY, fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase' }}>SLEEP ANALYSIS</div>
+    <div style={styles.container}>
+      {/* Gradient Header */}
+      <div style={styles.gradientHeader}>
+        {onBack && (
+          <button style={styles.backBtn} onClick={onBack}>
+            <BackArrow />
+            <span style={{ fontSize: 16, color: '#1A1A1A', fontWeight: 500 }}>Back</span>
+          </button>
+        )}
+        <div style={styles.headerTitle}>Sleep</div>
+
+        {/* Frosted Ring Card */}
+        <div style={styles.frostedCard}>
+          <svg width={ringSize} height={ringSize} viewBox={`0 0 ${ringSize} ${ringSize}`}>
+            <circle cx={ringSize / 2} cy={ringSize / 2} r={r} fill="none" stroke="rgba(88,86,214,0.15)" strokeWidth={stroke} />
+            <circle cx={ringSize / 2} cy={ringSize / 2} r={r} fill="none" stroke="#5856D6" strokeWidth={stroke}
+              strokeDasharray={circ} strokeDashoffset={offset}
+              strokeLinecap="round" transform={`rotate(-90 ${ringSize / 2} ${ringSize / 2})`} />
+            <text x={ringSize / 2} y={ringSize / 2 - 4} textAnchor="middle" dominantBaseline="central"
+              style={{ fontSize: 24, fontWeight: 700, fill: '#1A1A1A', fontFamily: "-apple-system, sans-serif" }}>
+              {s.score}
+            </text>
+            <text x={ringSize / 2} y={ringSize / 2 + 16} textAnchor="middle"
+              style={{ fontSize: 10, fill: '#8E8E93', fontFamily: "-apple-system, sans-serif" }}>
+              / 100
+            </text>
+          </svg>
+          <div style={{ marginTop: 8, fontSize: 14, fontWeight: 600, color: '#1A1A1A' }}>Sleep Score</div>
+          <div style={{ fontSize: 13, color: '#8E8E93', marginTop: 2 }}>{s.total} total sleep</div>
+        </div>
       </div>
 
-      {/* Big Score */}
-      <div style={{ textAlign: 'center', padding: '8px 20px 20px' }}>
-        <div style={{
-          fontSize: 72, fontWeight: 900, color: PURPLE, lineHeight: 1,
-          textShadow: `0 0 40px ${PURPLE}44`
-        }}>{s.score}</div>
-        <div style={{ color: GRAY, fontSize: 11, fontWeight: 700, letterSpacing: 2, marginTop: 4 }}>SLEEP SCORE</div>
-        <div style={{ color: GRAY, fontSize: 13, marginTop: 4 }}>{s.total} total sleep</div>
-      </div>
-
-      {/* Sleep Stages */}
-      <div style={{ padding: '0 20px', marginBottom: 16 }}>
-        <div style={{ background: SURFACE, borderRadius: 16, padding: 16, borderTop: `3px solid ${PURPLE}` }}>
-          <div style={{ color: GRAY, fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>Sleep Stages</div>
-          <SleepStagesChart />
-          {/* Stage bars */}
-          <div style={{ marginTop: 12 }}>
+      {/* Content */}
+      <div style={styles.body}>
+        {/* Sleep Stages */}
+        <div style={styles.card}>
+          <div style={styles.cardLabel}>SLEEP STAGES</div>
+          <div style={styles.stagesBar}>
             {stages.map((st, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                <div style={{ width: 8, height: 8, borderRadius: 4, background: st.color, flexShrink: 0 }} />
-                <span style={{ color: GRAY, fontSize: 11, width: 45, fontWeight: 600 }}>{st.label}</span>
-                <div style={{ flex: 1, height: 6, borderRadius: 3, background: SURFACE2, overflow: 'hidden' }}>
-                  <div style={{ width: `${st.pct}%`, height: '100%', borderRadius: 3, background: st.color }} />
-                </div>
-                <span style={{ color: WHITE, fontSize: 12, fontWeight: 700, width: 55, textAlign: 'right' }}>{st.duration}</span>
+              <div key={i} style={{ flex: st.pct, height: 12, background: st.color, borderRadius: i === 0 ? '6px 0 0 6px' : i === stages.length - 1 ? '0 6px 6px 0' : 0 }} />
+            ))}
+          </div>
+          <div style={styles.legend}>
+            {stages.map((st, i) => (
+              <div key={i} style={styles.legendItem}>
+                <div style={{ width: 8, height: 8, borderRadius: 2, background: st.color }} />
+                <span style={{ fontSize: 12, color: '#8E8E93' }}>{st.label}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#1A1A1A' }}>{st.time}</span>
               </div>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Stats Grid */}
-      <div style={{ padding: '0 20px', marginBottom: 16 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+        {/* Stats */}
+        <div style={styles.card}>
+          <div style={styles.cardLabel}>DETAILS</div>
           {stats.map((st, i) => (
-            <div key={i} style={{
-              background: SURFACE, borderRadius: 12, padding: '12px 10px', textAlign: 'center',
-              borderTop: `2px solid ${SURFACE2}`
-            }}>
-              <div style={{ color: GRAY, fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>{st.label}</div>
-              <div style={{ color: WHITE, fontSize: 16, fontWeight: 900 }}>{st.value}</div>
+            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '11px 0', borderBottom: i < stats.length - 1 ? '1px solid #F0F0F0' : 'none' }}>
+              <span style={{ fontSize: 14, color: '#8E8E93' }}>{st.label}</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: '#1A1A1A' }}>{st.value}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Weekly Chart */}
+        <div style={styles.card}>
+          <div style={styles.cardLabel}>7-DAY SLEEP SCORE</div>
+          <div style={styles.barChart}>
+            {weeklySleep.map((v, i) => (
+              <div key={i} style={styles.barCol}>
+                <div style={styles.barTrack}>
+                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: `${(v / maxSleep) * 100}%`, background: i === 6 ? '#5856D6' : '#A5A4F3', borderRadius: 4 }} />
+                </div>
+                <span style={{ fontSize: 10, color: '#8E8E93', marginTop: 4 }}>{days[i]}</span>
+                <span style={{ fontSize: 10, fontWeight: 600, color: '#1A1A1A' }}>{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Recommendations */}
+        <div style={{ ...styles.card, marginBottom: 24 }}>
+          <div style={styles.cardLabel}>RECOMMENDATIONS</div>
+          {['Maintain your 10:30 PM bedtime for consistency', 'Avoid screens 30 min before bed', 'Your deep sleep is improving - keep it up'].map((rec, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: i < 2 ? 12 : 0 }}>
+              <div style={{ width: 6, height: 6, borderRadius: 3, background: '#5856D6', marginTop: 6, flexShrink: 0 }} />
+              <span style={{ fontSize: 14, color: '#1A1A1A', lineHeight: 1.4 }}>{rec}</span>
             </div>
           ))}
         </div>
       </div>
-
-      {/* Weekly Charts */}
-      <div style={{ padding: '0 20px' }}>
-        <WeeklyChart data={weeklySleep} color={PURPLE} label="7-Day Sleep Score" />
-        <WeeklyChart data={weeklyHRV} color={TEAL} label="7-Day HRV" />
-      </div>
-
-      {/* Recommendations */}
-      <div style={{ padding: '0 20px' }}>
-        <div style={{ color: GRAY, fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 10 }}>Recommendations</div>
-        {recommendations.map((r, i) => (
-          <div key={i} style={{
-            background: SURFACE, borderRadius: 12, padding: '12px 16px', marginBottom: 8,
-            borderLeft: `3px solid ${PURPLE}`, color: WHITE, fontSize: 13, lineHeight: 1.4
-          }}>
-            {r}
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    minHeight: '100%',
+    background: '#F8F8F8',
+  },
+  gradientHeader: {
+    background: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
+    padding: '12px 16px 0 16px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    position: 'relative',
+    paddingBottom: 40,
+  },
+  backBtn: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    position: 'absolute',
+    left: 12,
+    top: 14,
+    WebkitTapHighlightColor: 'transparent',
+  },
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: 600,
+    color: '#1A1A1A',
+    marginBottom: 20,
+  },
+  frostedCard: {
+    background: 'rgba(255,255,255,0.85)',
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
+    borderRadius: 24,
+    padding: '24px 36px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+  },
+  body: {
+    padding: '16px 16px 0 16px',
+    marginTop: -16,
+  },
+  card: {
+    background: '#FFFFFF',
+    borderRadius: 16,
+    padding: 18,
+    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+    marginBottom: 12,
+  },
+  cardLabel: {
+    fontSize: 11,
+    fontWeight: 600,
+    color: '#8E8E93',
+    letterSpacing: 1,
+    marginBottom: 12,
+  },
+  stagesBar: {
+    display: 'flex',
+    borderRadius: 6,
+    overflow: 'hidden',
+    marginBottom: 14,
+  },
+  legend: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  legendItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 6,
+  },
+  barChart: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    height: 120,
+    gap: 6,
+  },
+  barCol: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    height: '100%',
+  },
+  barTrack: {
+    flex: 1,
+    width: '60%',
+    position: 'relative',
+    borderRadius: 4,
+    background: '#F0F0F0',
+  },
+};

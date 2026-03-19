@@ -1,152 +1,278 @@
 import React, { useState } from 'react';
 import { today } from '../../data/fake';
 
-const CORAL = '#FF6B35';
-const TEAL = '#4ECDC4';
-const PURPLE = '#9B59B6';
-const BG = '#0F0F0F';
-const SURFACE = '#1A1A1A';
-const SURFACE2 = '#222222';
-const WHITE = '#FFFFFF';
-const GRAY = '#999999';
-
 const categories = [
-  { id: 'workout', label: 'Workout', icon: '🏋️', color: CORAL, fields: ['Type', 'Duration', 'Intensity'] },
-  { id: 'nutrition', label: 'Nutrition', icon: '🥗', color: TEAL, fields: ['Meal', 'Calories', 'Notes'] },
-  { id: 'supplement', label: 'Supplement', icon: '💊', color: PURPLE, fields: ['Name', 'Dose', 'Time'] },
-  { id: 'journal', label: 'Journal', icon: '📝', color: '#F39C12', fields: ['Mood', 'Energy', 'Notes'] },
+  {
+    key: 'workout',
+    label: 'Workout',
+    color: '#FF8C42',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF8C42" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6.5 6.5h11v11h-11z" /><path d="M3 12h3" /><path d="M18 12h3" /><path d="M12 3v3" /><path d="M12 18v3" />
+      </svg>
+    ),
+  },
+  {
+    key: 'nutrition',
+    label: 'Nutrition',
+    color: '#34C759',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34C759" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 8h1a4 4 0 0 1 0 8h-1" /><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" /><line x1="6" y1="1" x2="6" y2="4" /><line x1="10" y1="1" x2="10" y2="4" /><line x1="14" y1="1" x2="14" y2="4" />
+      </svg>
+    ),
+  },
+  {
+    key: 'supplement',
+    label: 'Supplement',
+    color: '#5856D6',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5856D6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="4" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" />
+      </svg>
+    ),
+  },
+  {
+    key: 'mood',
+    label: 'Mood',
+    color: '#FF3B30',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF3B30" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" y1="9" x2="9.01" y2="9" /><line x1="15" y1="9" x2="15.01" y2="9" />
+      </svg>
+    ),
+  },
 ];
 
-const todayEntries = [
-  { category: 'workout', label: 'Upper Body Strength', time: '8:30 AM', detail: '42 min \u00B7 High intensity' },
-  { category: 'supplement', label: 'Omega-3', time: '7:00 AM', detail: '1000mg' },
-  { category: 'supplement', label: 'Vitamin D', time: '7:00 AM', detail: '5000 IU' },
-  { category: 'nutrition', label: 'Breakfast', time: '7:30 AM', detail: '420 cal \u00B7 High protein' },
-  { category: 'journal', label: 'Morning Check-in', time: '6:45 AM', detail: 'Mood: Good \u00B7 Energy: 7/10' },
-];
-
-function getCatColor(id) {
-  return categories.find(c => c.id === id)?.color || GRAY;
-}
-
-export default function LogScreen({ onBack }) {
+export default function LogScreen() {
   const [modal, setModal] = useState(null);
 
+  const doneCount = today.supplements.filter(s => s.done).length;
+  const totalCount = today.supplements.length;
+
   return (
-    <div style={{ background: BG, minHeight: '100%', paddingBottom: 100 }}>
-      {/* Header */}
-      <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div onClick={onBack} style={{ color: GRAY, fontSize: 24, cursor: 'pointer', lineHeight: 1 }}>&#8592;</div>
-        <div style={{ color: GRAY, fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase' }}>QUICK LOG</div>
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <div style={styles.title}>Journal</div>
+        <div style={styles.subtitle}>Track your daily wellness</div>
       </div>
 
-      {/* 2x2 Category Grid */}
-      <div style={{ padding: '0 20px', marginBottom: 20 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          {categories.map((cat) => (
-            <div key={cat.id} onClick={() => setModal(cat)} style={{
-              background: SURFACE, borderRadius: 20, padding: '24px 16px',
-              textAlign: 'center', cursor: 'pointer', borderTop: `3px solid ${cat.color}`,
-              position: 'relative', overflow: 'hidden'
-            }}>
-              <div style={{
-                position: 'absolute', top: 0, left: 0, right: 0, height: 50,
-                background: `linear-gradient(180deg, ${cat.color}12, transparent)`
-              }} />
-              <div style={{ fontSize: 32, marginBottom: 8 }}>{cat.icon}</div>
-              <div style={{ color: WHITE, fontSize: 14, fontWeight: 800 }}>{cat.label}</div>
-              <div style={{ color: GRAY, fontSize: 10, marginTop: 4 }}>Tap to log</div>
+      {/* Category Grid */}
+      <div style={styles.grid}>
+        {categories.map((cat) => (
+          <button key={cat.key} style={styles.catCard} onClick={() => setModal(cat.key)}>
+            <div style={{ ...styles.iconCircle, background: `${cat.color}10` }}>
+              {cat.icon}
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Supplement Checklist */}
-      <div style={{ padding: '0 20px', marginBottom: 16 }}>
-        <div style={{ color: GRAY, fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 10 }}>Supplement Tracker</div>
-        <div style={{ background: SURFACE, borderRadius: 16, padding: '12px 16px', borderTop: `2px solid ${PURPLE}` }}>
-          {today.supplements.map((sup, i) => (
-            <div key={i} style={{
-              display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0',
-              borderBottom: i < today.supplements.length - 1 ? `1px solid ${SURFACE2}` : 'none'
-            }}>
-              <div style={{
-                width: 22, height: 22, borderRadius: 6,
-                background: sup.done ? PURPLE : 'transparent',
-                border: `2px solid ${sup.done ? PURPLE : GRAY}`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: WHITE, fontSize: 12, fontWeight: 700
-              }}>
-                {sup.done && '\u2713'}
-              </div>
-              <span style={{
-                color: sup.done ? GRAY : WHITE, fontSize: 13, fontWeight: 600,
-                textDecoration: sup.done ? 'line-through' : 'none'
-              }}>{sup.name}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Today's Entries */}
-      <div style={{ padding: '0 20px' }}>
-        <div style={{ color: GRAY, fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 10 }}>Today's Entries</div>
-        {todayEntries.map((entry, i) => (
-          <div key={i} style={{
-            background: SURFACE, borderRadius: 14, padding: '12px 16px', marginBottom: 8,
-            borderLeft: `3px solid ${getCatColor(entry.category)}`
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div style={{ color: WHITE, fontSize: 13, fontWeight: 700 }}>{entry.label}</div>
-              <div style={{ color: GRAY, fontSize: 10, fontWeight: 600 }}>{entry.time}</div>
-            </div>
-            <div style={{ color: GRAY, fontSize: 11, marginTop: 3 }}>{entry.detail}</div>
-          </div>
+            <span style={styles.catLabel}>{cat.label}</span>
+          </button>
         ))}
       </div>
 
-      {/* Bottom Sheet Modal */}
-      {modal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0,0,0,0.7)', zIndex: 200,
-          display: 'flex', alignItems: 'flex-end', justifyContent: 'center'
-        }} onClick={() => setModal(null)}>
-          <div onClick={e => e.stopPropagation()} style={{
-            background: SURFACE, borderRadius: '24px 24px 0 0', padding: '20px 24px 40px',
-            width: '100%', maxWidth: 430
-          }}>
-            {/* Handle */}
-            <div style={{ width: 40, height: 4, borderRadius: 2, background: SURFACE2, margin: '0 auto 16px' }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-              <span style={{ fontSize: 24 }}>{modal.icon}</span>
-              <span style={{ color: WHITE, fontSize: 18, fontWeight: 900 }}>Log {modal.label}</span>
+      {/* Today's Entries */}
+      <div style={styles.section}>
+        <div style={styles.sectionLabel}>TODAY'S LOG</div>
+
+        {/* Workout Entry */}
+        <div style={styles.entryCard}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 4, height: 36, borderRadius: 2, background: '#FF8C42' }} />
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 600, color: '#1A1A1A' }}>{today.workout.name}</div>
+              <div style={{ fontSize: 13, color: '#8E8E93', marginTop: 2 }}>{today.workout.setsComplete}/{today.workout.setsTotal} sets</div>
             </div>
-            {modal.fields.map((field, i) => (
-              <div key={i} style={{ marginBottom: 14 }}>
-                <div style={{ color: GRAY, fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 6 }}>{field}</div>
-                <div style={{
-                  background: SURFACE2, borderRadius: 12, padding: '12px 16px',
-                  color: GRAY, fontSize: 14, border: `1px solid ${SURFACE2}`
-                }}>
-                  Enter {field.toLowerCase()}...
-                </div>
+          </div>
+        </div>
+
+        {/* Supplement Entry */}
+        <div style={styles.entryCard}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 4, height: 36, borderRadius: 2, background: '#5856D6' }} />
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 600, color: '#1A1A1A' }}>Supplements</div>
+              <div style={{ fontSize: 13, color: '#8E8E93', marginTop: 2 }}>{doneCount}/{totalCount} taken</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Supplements Checklist */}
+      <div style={styles.section}>
+        <div style={styles.sectionLabel}>SUPPLEMENTS</div>
+        <div style={styles.card}>
+          {today.supplements.map((sup, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < today.supplements.length - 1 ? '1px solid #F0F0F0' : 'none' }}>
+              <span style={{ fontSize: 15, color: sup.done ? '#8E8E93' : '#1A1A1A', textDecoration: sup.done ? 'line-through' : 'none' }}>{sup.name}</span>
+              <div style={{ width: 22, height: 22, borderRadius: 11, border: sup.done ? 'none' : '2px solid #E5E5EA', background: sup.done ? '#34C759' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {sup.done && (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                )}
               </div>
-            ))}
-            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-              <div onClick={() => setModal(null)} style={{
-                flex: 1, padding: '14px 0', borderRadius: 14, textAlign: 'center',
-                background: SURFACE2, color: GRAY, fontSize: 14, fontWeight: 700, cursor: 'pointer'
-              }}>Cancel</div>
-              <div onClick={() => setModal(null)} style={{
-                flex: 2, padding: '14px 0', borderRadius: 14, textAlign: 'center',
-                background: modal.color, color: WHITE, fontSize: 14, fontWeight: 800, cursor: 'pointer',
-                boxShadow: `0 4px 16px ${modal.color}44`
-              }}>Save Entry</div>
             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Upcoming */}
+      <div style={{ ...styles.section, marginBottom: 24 }}>
+        <div style={styles.sectionLabel}>UPCOMING</div>
+        <div style={styles.card}>
+          {today.upcoming.map((ev, i) => (
+            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: i < today.upcoming.length - 1 ? '1px solid #F0F0F0' : 'none' }}>
+              <span style={{ fontSize: 14, color: '#1A1A1A' }}>{ev.label}</span>
+              <span style={{ fontSize: 13, color: '#8E8E93', fontWeight: 500 }}>{ev.time}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Modal */}
+      {modal && (
+        <div style={styles.overlay} onClick={() => setModal(null)}>
+          <div style={styles.sheet} onClick={e => e.stopPropagation()}>
+            <div style={styles.sheetHandle} />
+            <div style={{ fontSize: 18, fontWeight: 700, color: '#1A1A1A', marginBottom: 8, textTransform: 'capitalize' }}>
+              Log {modal}
+            </div>
+            <div style={{ fontSize: 14, color: '#8E8E93', marginBottom: 20 }}>
+              Quick log your {modal} entry for today.
+            </div>
+            <div style={styles.inputRow}>
+              <div style={styles.fakeInput}>Tap to add details...</div>
+            </div>
+            <button style={styles.logBtn} onClick={() => setModal(null)}>
+              Save Entry
+            </button>
           </div>
         </div>
       )}
     </div>
   );
 }
+
+const styles = {
+  container: {
+    padding: '16px 16px 0 16px',
+    minHeight: '100%',
+  },
+  header: {
+    paddingTop: 8,
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 700,
+    color: '#1A1A1A',
+    letterSpacing: -0.5,
+  },
+  subtitle: {
+    fontSize: 15,
+    color: '#8E8E93',
+    marginTop: 4,
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: 12,
+    marginBottom: 24,
+  },
+  catCard: {
+    background: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+    border: 'none',
+    cursor: 'pointer',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 10,
+    WebkitTapHighlightColor: 'transparent',
+  },
+  iconCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 16,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  catLabel: {
+    fontSize: 14,
+    fontWeight: 600,
+    color: '#1A1A1A',
+  },
+  section: {
+    marginBottom: 16,
+  },
+  sectionLabel: {
+    fontSize: 11,
+    fontWeight: 600,
+    color: '#8E8E93',
+    letterSpacing: 1,
+    marginBottom: 10,
+    paddingLeft: 4,
+  },
+  entryCard: {
+    background: '#FFFFFF',
+    borderRadius: 14,
+    padding: 16,
+    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+    marginBottom: 8,
+  },
+  card: {
+    background: '#FFFFFF',
+    borderRadius: 16,
+    padding: '4px 18px',
+    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+  },
+  overlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(0,0,0,0.3)',
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    zIndex: 200,
+  },
+  sheet: {
+    background: '#FFFFFF',
+    borderRadius: '20px 20px 0 0',
+    padding: '12px 24px 32px 24px',
+    width: '100%',
+    maxWidth: 420,
+  },
+  sheetHandle: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    background: '#E5E5EA',
+    margin: '0 auto 16px auto',
+  },
+  inputRow: {
+    marginBottom: 16,
+  },
+  fakeInput: {
+    background: '#F8F8F8',
+    borderRadius: 12,
+    padding: '14px 16px',
+    fontSize: 15,
+    color: '#8E8E93',
+  },
+  logBtn: {
+    width: '100%',
+    padding: '14px 0',
+    borderRadius: 14,
+    background: '#1A1A1A',
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 600,
+    border: 'none',
+    cursor: 'pointer',
+  },
+};

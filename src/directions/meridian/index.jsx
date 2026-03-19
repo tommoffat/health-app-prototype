@@ -30,7 +30,7 @@ const titles = {
 
 const s = {
   shell: {
-    display: 'flex', flexDirection: 'column', height: '100vh',
+    display: 'flex', flexDirection: 'column', height: '100dvh',
     background: '#F2F2F7', fontFamily: '-apple-system, SF Pro Display, SF Pro Text, Helvetica Neue, Helvetica, Arial, sans-serif',
     WebkitFontSmoothing: 'antialiased', color: '#000000', maxWidth: 500, margin: '0 auto',
     position: 'relative',
@@ -53,7 +53,7 @@ const s = {
     fontFamily: 'inherit', padding: '8px',
   },
   content: {
-    flex: 1, overflow: 'auto', WebkitOverflowScrolling: 'touch',
+    flex: 1, minHeight: 0, overflow: 'auto', WebkitOverflowScrolling: 'touch',
   },
   tabBar: {
     background: 'rgba(249,249,249,0.94)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',

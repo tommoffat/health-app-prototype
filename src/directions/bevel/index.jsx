@@ -7,109 +7,182 @@ import LogScreen from './Log';
 import ProgressScreen from './Progress';
 import ProfileScreen from './Profile';
 
-const CORAL = '#FF6B35';
-const BG = '#0F0F0F';
-const SURFACE = '#1A1A1A';
-const WHITE = '#FFFFFF';
-const GRAY = '#999999';
+const HomeIcon = ({ color }) => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    <polyline points="9 22 9 12 15 12 15 22" />
+  </svg>
+);
 
-const tabs = [
-  { id: 'today', label: 'Today', icon: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z' },
-  { id: 'sleep', label: 'Sleep', icon: 'M12 3a9 9 0 109 9c0-4.97-4.03-9-9-9z' },
-  { id: 'activity', label: 'Activity', icon: 'M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3A7.28 7.28 0 0018 12.5v-2c-1.86-.64-3.42-1.4-4.5-2.5l-1.2-1.3c-.4-.4-1-.6-1.6-.6-.2 0-.3 0-.5.1L6 8.3V13h2V9.6l1.8-.7' },
-  { id: 'progress', label: 'Progress', icon: 'M3 13h2v8H3zm4-5h2v13H7zm4-3h2v16h-2zm4 6h2v10h-2zm4-8h2v18h-2z' },
-  { id: 'profile', label: 'Profile', icon: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2a7.2 7.2 0 01-6-3.22c.03-1.99 4-3.08 6-3.08 2 0 5.97 1.09 6 3.08a7.2 7.2 0 01-6 3.22z' },
-];
+const JournalIcon = ({ color }) => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+    <line x1="8" y1="7" x2="16" y2="7" />
+    <line x1="8" y1="11" x2="14" y2="11" />
+  </svg>
+);
 
-function TabIcon({ path, active }) {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? WHITE : GRAY}>
-      <path d={path} />
-    </svg>
-  );
-}
+const FitnessIcon = ({ color }) => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 20V10" /><path d="M12 20V4" /><path d="M6 20v-6" />
+  </svg>
+);
+
+const BiologyIcon = ({ color }) => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+  </svg>
+);
+
+const PlusIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round">
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <line x1="5" y1="12" x2="19" y2="12" />
+  </svg>
+);
 
 export default function BevelApp({ onExit }) {
-  const [activeTab, setActiveTab] = useState('today');
-  const [subScreen, setSubScreen] = useState(null);
+  const [screen, setScreen] = useState('today');
+  const [activeTab, setActiveTab] = useState('home');
 
-  const navigateTo = (screen) => {
-    if (['sleep', 'activity', 'biometrics', 'log', 'progress', 'profile'].includes(screen)) {
-      if (['sleep', 'activity', 'progress', 'profile'].includes(screen)) {
-        setActiveTab(screen);
-        setSubScreen(null);
-      } else {
-        setSubScreen(screen);
-      }
-    }
+  const navigate = (s) => setScreen(s);
+
+  const handleTab = (tab) => {
+    setActiveTab(tab);
+    if (tab === 'home') setScreen('today');
+    else if (tab === 'journal') setScreen('log');
+    else if (tab === 'plus') setScreen('log');
+    else if (tab === 'fitness') setScreen('activity');
+    else if (tab === 'biology') setScreen('biometrics');
   };
 
   const goBack = () => {
-    setSubScreen(null);
-    setActiveTab('today');
+    setScreen('today');
+    setActiveTab('home');
   };
 
-  const renderScreen = () => {
-    // Sub-screens first
-    if (subScreen === 'biometrics') return <BiometricsScreen onBack={goBack} />;
-    if (subScreen === 'log') return <LogScreen onBack={goBack} />;
+  const showTabBar = ['today', 'log', 'activity', 'biometrics'].includes(screen);
 
-    switch (activeTab) {
-      case 'today': return <TodayScreen onNavigate={navigateTo} />;
-      case 'sleep': return <SleepScreen onBack={goBack} />;
-      case 'activity': return <ActivityScreen onBack={goBack} />;
-      case 'progress': return <ProgressScreen onBack={goBack} />;
-      case 'profile': return <ProfileScreen onBack={goBack} onExit={onExit} />;
-      default: return <TodayScreen onNavigate={navigateTo} />;
+  const renderScreen = () => {
+    switch (screen) {
+      case 'today':
+        return <TodayScreen onNavigate={navigate} />;
+      case 'sleep':
+        return <SleepScreen onBack={goBack} />;
+      case 'activity':
+        return <ActivityScreen onBack={activeTab === 'fitness' ? null : goBack} />;
+      case 'biometrics':
+        return <BiometricsScreen onBack={activeTab === 'biology' ? null : goBack} />;
+      case 'log':
+        return <LogScreen />;
+      case 'progress':
+        return <ProgressScreen onBack={goBack} />;
+      case 'profile':
+        return <ProfileScreen onBack={goBack} onExit={onExit} />;
+      default:
+        return <TodayScreen onNavigate={navigate} />;
     }
   };
 
+  const tabColor = (tab) => activeTab === tab ? '#1A1A1A' : '#8E8E93';
+
   return (
-    <div style={{
-      background: BG, minHeight: '100vh', maxWidth: 430, margin: '0 auto',
-      position: 'relative', fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
-      overflow: 'hidden'
-    }}>
-      {/* Screen Content */}
-      <div style={{ paddingBottom: 64, minHeight: '100vh', overflowY: 'auto' }}>
+    <div style={styles.shell}>
+      <div style={{ ...styles.content, paddingBottom: showTabBar ? 80 : 0 }}>
         {renderScreen()}
       </div>
-
-      {/* Tab Bar */}
-      {!subScreen && (
-        <div style={{
-          position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
-          width: '100%', maxWidth: 430, background: SURFACE,
-          borderTop: `1px solid ${BG}`,
-          display: 'flex', justifyContent: 'space-around', alignItems: 'center',
-          padding: '8px 0 20px', zIndex: 50,
-          backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
-        }}>
-          {tabs.map(tab => {
-            const isActive = activeTab === tab.id;
-            return (
-              <div key={tab.id} onClick={() => { setActiveTab(tab.id); setSubScreen(null); }}
-                style={{
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
-                  cursor: 'pointer', padding: '4px 12px', position: 'relative'
-                }}>
-                <TabIcon path={tab.icon} active={isActive} />
-                <span style={{
-                  fontSize: 9, fontWeight: 700, letterSpacing: 0.5,
-                  color: isActive ? WHITE : GRAY, textTransform: 'uppercase'
-                }}>{tab.label}</span>
-                {/* Coral active dot */}
-                {isActive && (
-                  <div style={{
-                    position: 'absolute', bottom: -4, width: 4, height: 4, borderRadius: 2,
-                    background: CORAL, boxShadow: `0 0 6px ${CORAL}`
-                  }} />
-                )}
-              </div>
-            );
-          })}
+      {showTabBar && (
+        <div style={styles.tabBarOuter}>
+          <div style={styles.tabBar}>
+            <button style={styles.tabBtn} onClick={() => handleTab('home')}>
+              <HomeIcon color={tabColor('home')} />
+              <span style={{ ...styles.tabLabel, color: tabColor('home') }}>Home</span>
+            </button>
+            <button style={styles.tabBtn} onClick={() => handleTab('journal')}>
+              <JournalIcon color={tabColor('journal')} />
+              <span style={{ ...styles.tabLabel, color: tabColor('journal') }}>Journal</span>
+            </button>
+            <button style={styles.plusBtn} onClick={() => handleTab('plus')}>
+              <PlusIcon />
+            </button>
+            <button style={styles.tabBtn} onClick={() => handleTab('fitness')}>
+              <FitnessIcon color={tabColor('fitness')} />
+              <span style={{ ...styles.tabLabel, color: tabColor('fitness') }}>Fitness</span>
+            </button>
+            <button style={styles.tabBtn} onClick={() => handleTab('biology')}>
+              <BiologyIcon color={tabColor('biology')} />
+              <span style={{ ...styles.tabLabel, color: tabColor('biology') }}>Biology</span>
+            </button>
+          </div>
         </div>
       )}
     </div>
   );
 }
+
+const styles = {
+  shell: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100dvh',
+    overflow: 'hidden',
+    background: '#F8F8F8',
+    fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif",
+  },
+  content: {
+    flex: 1,
+    minHeight: 0,
+    overflowY: 'auto',
+    WebkitOverflowScrolling: 'touch',
+  },
+  tabBarOuter: {
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: '0 12px 10px 12px',
+    zIndex: 100,
+    pointerEvents: 'none',
+  },
+  tabBar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    background: '#FFFFFF',
+    borderRadius: 28,
+    boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
+    padding: '6px 8px',
+    pointerEvents: 'auto',
+  },
+  tabBtn: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 2,
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '6px 12px',
+    WebkitTapHighlightColor: 'transparent',
+  },
+  tabLabel: {
+    fontSize: 10,
+    fontWeight: 500,
+    letterSpacing: 0.2,
+  },
+  plusBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    background: '#1A1A1A',
+    border: 'none',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+    WebkitTapHighlightColor: 'transparent',
+    flexShrink: 0,
+  },
+};

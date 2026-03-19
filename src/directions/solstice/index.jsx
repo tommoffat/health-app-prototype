@@ -76,7 +76,7 @@ const styles = {
   shell: {
     display: 'flex',
     flexDirection: 'column',
-    height: '100vh',
+    height: '100dvh',
     background: '#1A1410',
     color: '#F5EDD8',
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
@@ -87,6 +87,7 @@ const styles = {
   },
   content: {
     flex: 1,
+    minHeight: 0,
     overflowY: 'auto',
     WebkitOverflowScrolling: 'touch',
   },

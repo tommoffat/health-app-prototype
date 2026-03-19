@@ -79,7 +79,7 @@ const styles = {
   container: {
     position: 'relative',
     width: '100%',
-    minHeight: '100vh',
+    minHeight: '100dvh',
     background: '#0D1117',
     fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
     color: '#E6EDF3',
@@ -109,7 +109,7 @@ const styles = {
     position: 'relative',
     zIndex: 1,
     paddingBottom: 90,
-    minHeight: '100vh',
+    minHeight: '100dvh',
   },
   tabBar: {
     position: 'fixed',

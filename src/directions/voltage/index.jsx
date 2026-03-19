@@ -62,7 +62,7 @@ export default function VoltageApp({ onExit }) {
 
   return (
     <div style={{
-      background: c.bg, minHeight: '100vh', color: c.text, position: 'relative',
+      background: c.bg, minHeight: '100dvh', color: c.text, position: 'relative',
       maxWidth: 430, margin: '0 auto',
     }}>
       {/* Header */}

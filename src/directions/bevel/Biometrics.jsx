@@ -1,160 +1,176 @@
 import React from 'react';
 import { today, weeklyHRV, weeklyWeight } from '../../data/fake';
 
-const TEAL = '#4ECDC4';
-const CORAL = '#FF6B35';
-const PURPLE = '#9B59B6';
-const BG = '#0F0F0F';
-const SURFACE = '#1A1A1A';
-const SURFACE2 = '#222222';
-const WHITE = '#FFFFFF';
-const GRAY = '#999999';
+const BackArrow = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="15 18 9 12 15 6" />
+  </svg>
+);
 
-const r = today.readiness;
-
-const metrics = [
-  { label: 'HRV', value: `${r.hrv} ms`, trend: '+5%', trendUp: true, color: TEAL, data: weeklyHRV },
-  { label: 'Resting HR', value: `${r.restingHR} bpm`, trend: '-2%', trendUp: true, color: CORAL, data: [56, 55, 54, 53, 52, 52, 52] },
-  { label: 'Body Temp', value: r.bodyTemp, trend: 'Normal', trendUp: null, color: PURPLE, data: [0.1, 0.0, 0.2, 0.1, 0.3, 0.2, 0.2] },
-  { label: 'SpO2', value: `${r.spo2}%`, trend: 'Normal', trendUp: null, color: TEAL, data: [97, 98, 97, 98, 98, 98, 98] },
-  { label: 'Weight', value: `${today.weight} lbs`, trend: '-0.8', trendUp: true, color: CORAL, data: weeklyWeight },
-  { label: 'Resp Rate', value: '14.2 brpm', trend: 'Normal', trendUp: null, color: PURPLE, data: [14.5, 14.3, 14.1, 14.4, 14.2, 14.3, 14.2] },
-];
-
-function Sparkline({ data, color, width = 70, height = 30 }) {
+const Sparkline = ({ data, color, width = 80, height = 30 }) => {
   const min = Math.min(...data);
   const max = Math.max(...data);
   const range = max - min || 1;
-  const points = data.map((v, i) =>
-    `${(i / (data.length - 1)) * width},${height - 4 - ((v - min) / range) * (height - 8)}`
-  ).join(' ');
-  const areaPoints = `0,${height} ${points} ${width},${height}`;
+  const points = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((v - min) / range) * (height - 4) - 2;
+    return `${x},${y}`;
+  }).join(' ');
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-      <defs>
-        <linearGradient id={`sg-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.25" />
-          <stop offset="100%" stopColor={color} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <polygon points={areaPoints} fill={`url(#sg-${color.replace('#', '')})`} />
       <polyline points={points} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={width} cy={parseFloat(points.split(' ').pop().split(',')[1])} r="3" fill={color} />
     </svg>
   );
-}
-
-function RecoveryGauge() {
-  const score = r.score;
-  const radius = 55;
-  const circ = 2 * Math.PI * radius;
-  const filled = circ * (score / 100);
-  return (
-    <div style={{ textAlign: 'center', marginBottom: 8 }}>
-      <svg width="140" height="140" viewBox="0 0 140 140">
-        <circle cx="70" cy="70" r={radius} fill="none" stroke={SURFACE2} strokeWidth="10" />
-        <circle cx="70" cy="70" r={radius} fill="none" stroke={TEAL} strokeWidth="10"
-          strokeDasharray={`${filled} ${circ}`} strokeLinecap="round"
-          transform="rotate(-90 70 70)"
-          style={{ filter: `drop-shadow(0 0 10px ${TEAL}55)` }} />
-      </svg>
-      <div style={{ marginTop: -95, position: 'relative' }}>
-        <div style={{ fontSize: 48, fontWeight: 900, color: TEAL, lineHeight: 1 }}>{score}</div>
-        <div style={{ color: GRAY, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginTop: 2 }}>RECOVERY</div>
-      </div>
-      <div style={{ height: 50 }} />
-    </div>
-  );
-}
+};
 
 export default function BiometricsScreen({ onBack }) {
-  return (
-    <div style={{ background: BG, minHeight: '100%', paddingBottom: 100 }}>
-      {/* Header */}
-      <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div onClick={onBack} style={{ color: GRAY, fontSize: 24, cursor: 'pointer', lineHeight: 1 }}>&#8592;</div>
-        <div style={{ color: GRAY, fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase' }}>BIOMETRICS & RECOVERY</div>
-      </div>
+  const rd = today.readiness;
+  const r = 44;
+  const stroke = 9;
+  const circ = 2 * Math.PI * r;
+  const offset = circ * (1 - rd.score / 100);
+  const ringSize = 100;
 
-      {/* Recovery Gauge */}
-      <div style={{ padding: '0 20px 10px' }}>
-        <div style={{
-          background: SURFACE, borderRadius: 20, padding: '24px 16px 16px',
-          borderTop: `3px solid ${TEAL}`, textAlign: 'center'
-        }}>
-          <RecoveryGauge />
+  const vitals = [
+    { label: 'Heart Rate Variability', value: rd.hrv, unit: 'ms', trend: '+12%', trendUp: true, color: '#34C759', data: weeklyHRV },
+    { label: 'Resting Heart Rate', value: rd.restingHR, unit: 'bpm', trend: '-2 bpm', trendUp: true, color: '#FF3B30', data: [56, 55, 54, 53, 52, 52, 52] },
+    { label: 'Blood Oxygen', value: rd.spo2, unit: '%', trend: 'Normal', trendUp: true, color: '#5856D6', data: [97, 98, 97, 98, 98, 98, 98] },
+    { label: 'Body Temperature', value: rd.bodyTemp, unit: '', trend: 'Baseline', trendUp: null, color: '#FF8C42', data: [0, 0.1, -0.1, 0.1, 0.2, 0.1, 0.2] },
+    { label: 'Weight', value: today.weight, unit: 'lbs', trend: '-0.8 lbs', trendUp: true, color: '#8E8E93', data: weeklyWeight },
+  ];
+
+  return (
+    <div style={styles.container}>
+      {/* Gradient Header */}
+      <div style={styles.gradientHeader}>
+        {onBack && (
+          <button style={styles.backBtn} onClick={onBack}>
+            <BackArrow />
+            <span style={{ fontSize: 16, color: '#1A1A1A', fontWeight: 500 }}>Back</span>
+          </button>
+        )}
+        <div style={styles.headerTitle}>Biology</div>
+
+        <div style={styles.frostedCard}>
+          <svg width={ringSize} height={ringSize} viewBox={`0 0 ${ringSize} ${ringSize}`}>
+            <circle cx={ringSize / 2} cy={ringSize / 2} r={r} fill="none" stroke="rgba(52,199,89,0.15)" strokeWidth={stroke} />
+            <circle cx={ringSize / 2} cy={ringSize / 2} r={r} fill="none" stroke="#34C759" strokeWidth={stroke}
+              strokeDasharray={circ} strokeDashoffset={offset}
+              strokeLinecap="round" transform={`rotate(-90 ${ringSize / 2} ${ringSize / 2})`} />
+            <text x={ringSize / 2} y={ringSize / 2 - 4} textAnchor="middle" dominantBaseline="central"
+              style={{ fontSize: 24, fontWeight: 700, fill: '#1A1A1A', fontFamily: "-apple-system, sans-serif" }}>
+              {rd.score}
+            </text>
+            <text x={ringSize / 2} y={ringSize / 2 + 16} textAnchor="middle"
+              style={{ fontSize: 10, fill: '#8E8E93', fontFamily: "-apple-system, sans-serif" }}>
+              / 100
+            </text>
+          </svg>
+          <div style={{ marginTop: 8, fontSize: 14, fontWeight: 600, color: '#1A1A1A' }}>Recovery Score</div>
+          <div style={{ fontSize: 13, color: '#8E8E93', marginTop: 2 }}>Your body is well recovered</div>
         </div>
       </div>
 
-      {/* 2-Column Metric Cards */}
-      <div style={{ padding: '0 20px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          {metrics.map((m, i) => (
-            <div key={i} style={{
-              background: SURFACE, borderRadius: 16, padding: '14px 16px',
-              borderTop: `2px solid ${m.color}22`, position: 'relative', overflow: 'hidden'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                <div>
-                  <div style={{ color: GRAY, fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>{m.label}</div>
-                  <div style={{ color: WHITE, fontSize: 20, fontWeight: 900 }}>{m.value}</div>
+      <div style={styles.body}>
+        {vitals.map((v, i) => (
+          <div key={i} style={styles.vitalCard}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: '#8E8E93', letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 6 }}>{v.label}</div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <span style={{ fontSize: 32, fontWeight: 700, color: '#1A1A1A' }}>{v.value}</span>
+                  {v.unit && <span style={{ fontSize: 14, color: '#8E8E93' }}>{v.unit}</span>}
+                </div>
+                <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  {v.trendUp !== null && (
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill={v.trendUp ? '#34C759' : '#FF3B30'}>
+                      {v.trendUp
+                        ? <polygon points="5,1 9,7 1,7" />
+                        : <polygon points="5,9 9,3 1,3" />
+                      }
+                    </svg>
+                  )}
+                  <span style={{ fontSize: 12, color: v.trendUp ? '#34C759' : '#8E8E93', fontWeight: 500 }}>{v.trend}</span>
                 </div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                <div style={{
-                  color: m.trendUp === true ? TEAL : m.trendUp === false ? CORAL : GRAY,
-                  fontSize: 11, fontWeight: 700
-                }}>
-                  {m.trendUp === true ? '\u25B2 ' : m.trendUp === false ? '\u25BC ' : ''}{m.trend}
-                </div>
-                <Sparkline data={m.data} color={m.color} />
+              <div style={{ marginTop: 8 }}>
+                <Sparkline data={v.data} color={v.color} />
               </div>
+            </div>
+          </div>
+        ))}
+
+        {/* Summary Card */}
+        <div style={{ ...styles.vitalCard, marginBottom: 24 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: '#8E8E93', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>RECOVERY INSIGHTS</div>
+          {[
+            'HRV is trending upward, indicating good recovery',
+            'Resting HR is at your personal best range',
+            'All vitals are within optimal ranges',
+          ].map((t, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: i < 2 ? 12 : 0 }}>
+              <div style={{ width: 6, height: 6, borderRadius: 3, background: '#34C759', marginTop: 6, flexShrink: 0 }} />
+              <span style={{ fontSize: 14, color: '#1A1A1A', lineHeight: 1.4 }}>{t}</span>
             </div>
           ))}
         </div>
       </div>
-
-      {/* HRV Trend Chart */}
-      <div style={{ padding: '16px 20px' }}>
-        <div style={{ background: SURFACE, borderRadius: 16, padding: 16, borderTop: `2px solid ${SURFACE2}` }}>
-          <div style={{ color: GRAY, fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 10 }}>7-Day HRV Trend</div>
-          <HRVChart />
-        </div>
-      </div>
     </div>
   );
 }
 
-function HRVChart() {
-  const W = 300, H = 100;
-  const data = weeklyHRV;
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const min = Math.min(...data) - 5;
-  const max = Math.max(...data) + 5;
-  const range = max - min;
-  const points = data.map((v, i) => ({
-    x: 20 + (i / (data.length - 1)) * (W - 40),
-    y: 10 + (1 - (v - min) / range) * (H - 30)
-  }));
-  const line = points.map(p => `${p.x},${p.y}`).join(' ');
-  const area = `${points[0].x},${H - 15} ${line} ${points[points.length - 1].x},${H - 15}`;
-
-  return (
-    <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ display: 'block' }}>
-      <defs>
-        <linearGradient id="hrvBevelGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={TEAL} stopOpacity="0.3" />
-          <stop offset="100%" stopColor={TEAL} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <polygon points={area} fill="url(#hrvBevelGrad)" />
-      <polyline points={line} fill="none" stroke={TEAL} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-      {points.map((p, i) => (
-        <g key={i}>
-          <circle cx={p.x} cy={p.y} r={i === data.length - 1 ? 5 : 3} fill={i === data.length - 1 ? TEAL : SURFACE} stroke={TEAL} strokeWidth="2" />
-          <text x={p.x} y={H - 2} fill={GRAY} fontSize="8" textAnchor="middle" fontWeight="600">{days[i]}</text>
-        </g>
-      ))}
-    </svg>
-  );
-}
+const styles = {
+  container: {
+    minHeight: '100%',
+    background: '#F8F8F8',
+  },
+  gradientHeader: {
+    background: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+    padding: '12px 16px 0 16px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    position: 'relative',
+    paddingBottom: 40,
+  },
+  backBtn: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    position: 'absolute',
+    left: 12,
+    top: 14,
+    WebkitTapHighlightColor: 'transparent',
+  },
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: 600,
+    color: '#1A1A1A',
+    marginBottom: 20,
+  },
+  frostedCard: {
+    background: 'rgba(255,255,255,0.85)',
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
+    borderRadius: 24,
+    padding: '24px 36px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+  },
+  body: {
+    padding: '16px 16px 0 16px',
+    marginTop: -16,
+  },
+  vitalCard: {
+    background: '#FFFFFF',
+    borderRadius: 16,
+    padding: 18,
+    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+    marginBottom: 12,
+  },
+};

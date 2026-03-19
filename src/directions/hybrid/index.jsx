@@ -92,13 +92,13 @@ export default function HybridDirection({ onExit }) {
 
   return (
     <div style={{
-      background: c.bg, minHeight: '100vh', maxWidth: 430, margin: '0 auto',
+      background: c.bg, height: '100dvh', maxWidth: 430, margin: '0 auto',
       fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif',
-      display: 'flex', flexDirection: 'column', position: 'relative',
+      display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden',
     }}>
       {/* Scrollable content */}
       <div style={{
-        flex: 1, overflowY: 'auto', paddingBottom: 72,
+        flex: 1, minHeight: 0, overflowY: 'auto', paddingBottom: 72,
         WebkitOverflowScrolling: 'touch',
       }}>
         {renderScreen()}
