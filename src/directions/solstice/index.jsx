@@ -83,12 +83,13 @@ const styles = {
     maxWidth: 430,
     margin: '0 auto',
     position: 'relative',
-    overflow: 'hidden',
+    overflow: 'visible',
   },
   content: {
     flex: 1,
     minHeight: 0,
     overflowY: 'auto',
+    WebkitOverflowScrolling: 'touch',
     WebkitOverflowScrolling: 'touch',
   },
   tabBar: {

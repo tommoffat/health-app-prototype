@@ -55,12 +55,12 @@ export default function BevelApp({ onExit }) {
   const activeTab = ['home', 'journal', 'fitness', 'biology'].includes(screen) ? screen : 'home'
 
   return (
-    <div style={{ maxWidth: 390, margin: '0 auto', background: BG, minHeight: '100vh', position: 'relative', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', color: TEXT, overflow: 'hidden' }}>
+    <div style={{ maxWidth: 390, margin: '0 auto', background: BG, height: '100dvh', position: 'relative', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', color: TEXT, overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
       {/* Exit button */}
       <button onClick={onExit} style={{ position: 'fixed', top: 12, right: 12, zIndex: 200, background: 'rgba(255,255,255,0.1)', border: 'none', color: TEXT2, fontSize: 12, padding: '6px 12px', borderRadius: 8, cursor: 'pointer' }}>✕ Exit</button>
 
       {/* Main screen */}
-      <div style={{ paddingBottom: 83, minHeight: '100vh', overflowY: 'auto' }}>
+      <div style={{ paddingBottom: 83 }}>
         <Screen navigate={navigate} openModal={openModal} {...screenProps} />
       </div>
 

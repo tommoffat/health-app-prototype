@@ -79,11 +79,11 @@ const styles = {
   container: {
     position: 'relative',
     width: '100%',
-    minHeight: '100dvh',
+    height: '100dvh', overflowY: 'auto', WebkitOverflowScrolling: 'touch',
     background: '#0D1117',
     fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
     color: '#E6EDF3',
-    overflow: 'hidden',
+    overflow: 'visible',
   },
   auroraTR: {
     position: 'fixed',
@@ -109,7 +109,7 @@ const styles = {
     position: 'relative',
     zIndex: 1,
     paddingBottom: 90,
-    minHeight: '100dvh',
+    height: '100dvh', overflowY: 'auto', WebkitOverflowScrolling: 'touch',
   },
   tabBar: {
     position: 'fixed',
