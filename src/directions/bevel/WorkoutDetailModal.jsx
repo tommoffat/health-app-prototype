@@ -1,3 +1,4 @@
+import Icon from './components/Icon'
 import React from 'react'
 
 const BG = '#0F1117'
@@ -101,7 +102,7 @@ export default function WorkoutDetailModal({ closeModal }) {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 18 }}>❤️</span>
+            <Icon name="heart" size={18} color="#FF6B6B" strokeWidth={1.75} />
             <span style={{ fontSize: 22, fontWeight: 700, color: TEXT }}>134 bpm</span>
           </div>
           <span style={{ fontSize: 13, color: TEXT2 }}>Heart Rate</span>

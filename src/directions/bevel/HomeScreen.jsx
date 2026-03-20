@@ -1,3 +1,4 @@
+import Icon from './components/Icon'
 import React from 'react'
 import ScoreRing from './components/ScoreRing'
 import HatchedRing from './components/HatchedRing'
@@ -139,7 +140,7 @@ export default function HomeScreen({ navigate, openModal }) {
       {/* ─── 2. Status Pills ────────────────────────── */}
       <div style={{ padding: '8px 20px', display: 'flex', gap: 8 }}>
         {[
-          '🏃 Active ▾',
+          'Active ▾',
           '📍 72°F · San Francisco ▾',
         ].map((label, i) => (
           <div key={i} style={{
@@ -314,7 +315,7 @@ export default function HomeScreen({ navigate, openModal }) {
         alignItems: 'center',
         gap: 12,
       }}>
-        <span style={{ fontSize: 18 }}>⚡</span>
+        <Icon name="zap" size={18} color="#C9A050" strokeWidth={1.75} />
         <span style={{ fontSize: 14, color: TEXT, flex: 1 }}>Body Battery</span>
         {/* Segmented bar */}
         <div style={{ display: 'flex', gap: 2, alignItems: 'center' }}>
@@ -341,12 +342,12 @@ export default function HomeScreen({ navigate, openModal }) {
         gap: 10,
         padding: '0 20px',
       }}>
-        <MetricCard icon="🌡" label="Temp" value="97.6" unit="°F" status="→ Normal" statusColor={TEXT2} fillPct={50} fillColor={TEXT2} />
-        <MetricCard icon="😴" label="Sleep" value="7h 22m" unit="" status="↑ Higher" statusColor="#6ECC6E" fillPct={75} fillColor="#6ECC6E" />
-        <MetricCard icon="❤️" label="RHR" value="52" unit="bpm" status="→ Normal" statusColor={TEXT2} fillPct={45} fillColor={TEXT2} />
-        <MetricCard icon="〰️" label="HRV" value="68" unit="ms" status="↑ Higher" statusColor="#5B8DEF" fillPct={70} fillColor="#5B8DEF" />
-        <MetricCard icon="💧" label="SpO2" value="98" unit="%" status="→ Normal" statusColor={TEXT2} fillPct={85} fillColor={TEXT2} />
-        <MetricCard icon="⚖️" label="Weight" value="178.4" unit="lbs" status="→ Stable" statusColor={TEXT2} fillPct={55} fillColor={TEXT2} />
+        <MetricCard icon="thermometer" label="Temp" value="97.6" unit="°F" status="→ Normal" statusColor={TEXT2} fillPct={50} fillColor={TEXT2} />
+        <MetricCard icon="moon" label="Sleep" value="7h 22m" unit="" status="↑ Higher" statusColor="#6ECC6E" fillPct={75} fillColor="#6ECC6E" />
+        <MetricCard icon="heart" label="RHR" value="52" unit="bpm" status="→ Normal" statusColor={TEXT2} fillPct={45} fillColor={TEXT2} />
+        <MetricCard icon="activity" label="HRV" value="68" unit="ms" status="↑ Higher" statusColor="#5B8DEF" fillPct={70} fillColor="#5B8DEF" />
+        <MetricCard icon="droplets" label="SpO2" value="98" unit="%" status="→ Normal" statusColor={TEXT2} fillPct={85} fillColor={TEXT2} />
+        <MetricCard icon="bar-chart" label="Weight" value="178.4" unit="lbs" status="→ Stable" statusColor={TEXT2} fillPct={55} fillColor={TEXT2} />
       </div>
 
       {/* ─── 6. Cardio Load ──────────────────────────── */}

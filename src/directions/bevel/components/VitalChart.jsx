@@ -1,3 +1,4 @@
+import Icon from './Icon'
 import React from 'react'
 
 const TEXT2 = '#8A8FA8'
@@ -54,7 +55,7 @@ export default function VitalChart({ type = 'hr', width = 350, height = 180, sta
       {/* Trend line */}
       <path d={pathD} fill="none" stroke={color} strokeWidth={1.5} opacity={0.8} />
       {/* Time axis */}
-      <text x={pad.left} y={height - 4} fill={TEXT2} fontSize={10}>🌙 {startTime}</text>
+      <text x={pad.left} y={height - 4} fill={TEXT2} fontSize={10}>{startTime}</text>
       <text x={pad.left + w} y={height - 4} fill={TEXT2} fontSize={10} textAnchor="end">☀️ {endTime}</text>
     </svg>
   )

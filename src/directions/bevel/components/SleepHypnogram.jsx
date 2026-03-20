@@ -1,3 +1,4 @@
+import Icon from './Icon'
 import React from 'react'
 
 const STAGES = { awake: 0, rem: 1, core: 2, deep: 3 }
@@ -57,7 +58,7 @@ export default function SleepHypnogram({ stages = defaultStages, width = 350, he
         )
       })}
       {/* Time axis */}
-      <text x={pad.left} y={height - 4} fill={TEXT2} fontSize={10}>🌙 {startTime}</text>
+      <text x={pad.left} y={height - 4} fill={TEXT2} fontSize={10}>{startTime}</text>
       <text x={pad.left + w} y={height - 4} fill={TEXT2} fontSize={10} textAnchor="end">☀️ {endTime}</text>
     </svg>
   )

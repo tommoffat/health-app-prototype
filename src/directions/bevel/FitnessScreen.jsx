@@ -1,3 +1,4 @@
+import Icon from './components/Icon'
 import React from 'react'
 
 const TEXT = '#FFFFFF'
@@ -10,7 +11,7 @@ export default function FitnessScreen() {
       <h1 style={{ fontSize: 28, fontWeight: 700, color: TEXT, marginBottom: 8 }}>Fitness</h1>
       <p style={{ color: TEXT2, fontSize: 14, lineHeight: 1.6 }}>Your workouts, exercises, and training plans.</p>
       <div style={{ background: SURFACE, borderRadius: 16, padding: 24, marginTop: 20, textAlign: 'center' }}>
-        <div style={{ fontSize: 40, marginBottom: 12 }}>💪</div>
+        <div style={{ marginBottom: 12 }}><Icon name="dumbbell" size={40} color="#8A8FA8" strokeWidth={1.5} /></div>
         <div style={{ color: TEXT2, fontSize: 14 }}>Coming soon</div>
       </div>
     </div>

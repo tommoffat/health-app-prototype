@@ -1,3 +1,4 @@
+import Icon from './components/Icon'
 import React from 'react';
 import ScoreRing from './components/ScoreRing';
 import HatchedRing from './components/HatchedRing';
@@ -16,10 +17,10 @@ const COACHING_LABEL = '#C9A050';
 
 export default function StrainDetail({ navigate, openModal }) {
   const trends = [
-    { icon: '🔥', label: 'Strain Score', value: '59%', status: '→ Normal range', statusColor: TEXT2, sparkData: [45,52,58,55,60,57,59] },
+    { icon: 'flame', label: 'Strain Score', value: '59%', status: '→ Normal range', statusColor: TEXT2, sparkData: [45,52,58,55,60,57,59] },
     { icon: '⏱', label: 'Exercise Duration', value: '34m', status: '→ Normal range', statusColor: TEXT2, sparkData: [30,35,40,32,38,36,34] },
-    { icon: '❤️', label: 'Daytime HR', value: '72 bpm', status: '→ Normal range', statusColor: TEXT2, sparkData: [70,72,74,71,73,72,72] },
-    { icon: '⚡', label: 'Total Energy', value: '8.2k kJ', status: '→ Normal range', statusColor: TEXT2, sparkData: [7.5,8.0,8.5,8.2,8.4,8.1,8.2] },
+    { icon: 'heart', label: 'Daytime HR', value: '72 bpm', status: '→ Normal range', statusColor: TEXT2, sparkData: [70,72,74,71,73,72,72] },
+    { icon: 'zap', label: 'Total Energy', value: '8.2k kJ', status: '→ Normal range', statusColor: TEXT2, sparkData: [7.5,8.0,8.5,8.2,8.4,8.1,8.2] },
     { icon: '👟', label: 'Step Count', value: '8,432', status: '→ Normal range', statusColor: TEXT2, sparkData: [7500,8000,8500,8200,8400,8300,8432] },
   ];
 
@@ -51,7 +52,7 @@ export default function StrainDetail({ navigate, openModal }) {
           <div style={{ fontSize: 20, fontWeight: 700 }}>34m</div>
         </div>
         <div style={{ background: SURFACE, borderRadius: 14, padding: 14, flex: 1 }}>
-          <div style={{ fontSize: 14, marginBottom: 4 }}>🔥 Total Energy</div>
+          <div style={{ fontSize: 14, marginBottom: 4, display: "flex", alignItems: "center", gap: 6 }}><Icon name="flame" size={14} color={TEXT2} strokeWidth={1.75}/>Total Energy</div>
           <div style={{ fontSize: 20, fontWeight: 700 }}>8,200 kJ</div>
         </div>
       </div>

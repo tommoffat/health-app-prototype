@@ -50,7 +50,7 @@ export default function App() {
         textAlign: 'center',
         marginBottom: '6px',
         marginTop: '40px',
-      }}>Health App v2  🦉</h1>
+      }}>Health App v2</h1>
       <p style={{
         color: '#888',
         fontSize: '13px',

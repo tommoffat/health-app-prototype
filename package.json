@@ -12,6 +12,7 @@
     "deploy": "npm run build && CLOUDFLARE_API_TOKEN=$(security find-generic-password -a openclaw -s op-connect-token -w | xargs -I{} node -e \"const r=require('child_process');const t=r.execSync('curl -s -H Authorization: Bearer {} http://localhost:8080/v1/vaults/jzi6igkxfanitosao62kpxirfy/items/qtvqojqabjzypqquuqi4ceknby').toString();const d=JSON.parse(t);console.log(d.fields.find(f=>f.label==='API token').value)\") && wrangler pages deploy dist --project-name health-app-prototype --branch main"
   },
   "dependencies": {
+    "lucide-react": "^0.577.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },

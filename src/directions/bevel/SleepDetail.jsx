@@ -1,3 +1,4 @@
+import Icon from './components/Icon'
 import React from 'react';
 import ScoreRing from './components/ScoreRing';
 import TrendRow from './components/TrendRow';
@@ -17,10 +18,10 @@ export default function SleepDetail({ navigate, openModal }) {
   const trends = [
     { icon: '😴', label: 'Sleep Score', value: '87%', status: '↑ Above normal', statusColor: '#6ECC6E', sparkData: [79,83,91,85,88,87,87] },
     { icon: '⏰', label: 'Time Asleep', value: '7h 22m', status: '↑ Above normal', statusColor: '#6ECC6E', sparkData: [6.5,7.0,7.5,7.2,7.8,7.3,7.4] },
-    { icon: '🧠', label: 'REM Sleep', value: '1h 58m', status: '→ Normal range', statusColor: TEXT2, sparkData: [1.5,1.8,2.1,1.7,2.0,1.9,2.0] },
+    { icon: 'brain', label: 'REM Sleep', value: '1h 58m', status: '→ Normal range', statusColor: TEXT2, sparkData: [1.5,1.8,2.1,1.7,2.0,1.9,2.0] },
     { icon: '🌊', label: 'Deep Sleep', value: '1h 44m', status: '↑ Above normal', statusColor: '#6ECC6E', sparkData: [1.2,1.5,1.8,1.6,1.7,1.7,1.7] },
     { icon: '🛏', label: 'Time in Bed', value: '7h 45m', status: '→ Normal range', statusColor: TEXT2, sparkData: [7.2,7.5,8.0,7.8,7.9,7.7,7.8] },
-    { icon: '📊', label: 'Sleep Efficiency', value: '94%', status: '↑ Above normal', statusColor: '#6ECC6E', sparkData: [90,92,95,93,94,94,94] },
+    { icon: 'bar-chart', label: 'Sleep Efficiency', value: '94%', status: '↑ Above normal', statusColor: '#6ECC6E', sparkData: [90,92,95,93,94,94,94] },
   ];
 
   return (
@@ -80,7 +81,7 @@ export default function SleepDetail({ navigate, openModal }) {
           onClick={() => openModal('primary-sleep')}
         >
           <div style={{ position: 'relative', width: 40, height: 40 }}>
-            <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#1E2240', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🌙</div>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#1E2240', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon name="moon" size={20} color="#7B8EF0" strokeWidth={1.75}/></div>
             <div style={{ position: 'absolute', bottom: -4, right: -4, background: SLEEP_COLOR, color: '#fff', fontSize: 10, fontWeight: 700, borderRadius: 8, padding: '1px 5px', minWidth: 20, textAlign: 'center' }}>87</div>
           </div>
           <div style={{ flex: 1 }}>

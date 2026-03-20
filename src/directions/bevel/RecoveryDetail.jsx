@@ -1,3 +1,4 @@
+import Icon from './components/Icon'
 import React from 'react';
 import ScoreRing from './components/ScoreRing';
 import TrendRow from './components/TrendRow';
@@ -17,10 +18,10 @@ export default function RecoveryDetail({ navigate, openModal }) {
   const trends = [
     { icon: '💚', label: 'Recovery Score', value: '84%', status: '↑ Above normal', statusColor: '#6ECC6E', sparkData: [72,76,80,78,82,83,84] },
     { icon: '〰️', label: 'Resting HRV', value: '68 ms', status: '↑ Above normal', statusColor: '#5B8DEF', sparkData: [61,64,68,65,70,68,68] },
-    { icon: '❤️', label: 'Resting HR', value: '52 bpm', status: '→ Normal range', statusColor: TEXT2, sparkData: [54,53,52,53,52,52,52] },
+    { icon: 'heart', label: 'Resting HR', value: '52 bpm', status: '→ Normal range', statusColor: TEXT2, sparkData: [54,53,52,53,52,52,52] },
     { icon: '🫁', label: 'Respiratory Rate', value: '15.7 rpm', status: '→ Normal range', statusColor: TEXT2, sparkData: [15.2,15.5,15.8,15.6,15.7,15.7,15.7] },
-    { icon: '💧', label: 'Oxygen Saturation', value: '98%', status: '→ Normal range', statusColor: TEXT2, sparkData: [97,98,98,97,98,98,98] },
-    { icon: '🌡', label: 'Wrist Temperature', value: '97.6°F', status: '→ Normal', statusColor: TEXT2, sparkData: [97.4,97.5,97.6,97.5,97.6,97.6,97.6] },
+    { icon: 'droplets', label: 'Oxygen Saturation', value: '98%', status: '→ Normal range', statusColor: TEXT2, sparkData: [97,98,98,97,98,98,98] },
+    { icon: 'thermometer', label: 'Wrist Temperature', value: '97.6°F', status: '→ Normal', statusColor: TEXT2, sparkData: [97.4,97.5,97.6,97.5,97.6,97.6,97.6] },
   ];
 
   return (
@@ -46,12 +47,12 @@ export default function RecoveryDetail({ navigate, openModal }) {
       {/* Stat cards */}
       <div style={{ display: 'flex', gap: 12, padding: '0 20px', marginBottom: 16 }}>
         <div style={{ background: SURFACE, borderRadius: 14, padding: 14, flex: 1 }}>
-          <div style={{ fontSize: 14, marginBottom: 4 }}>⚡ Resting HRV</div>
+          <div style={{ fontSize: 14, marginBottom: 4, display: "flex", alignItems: "center", gap: 6 }}><Icon name="zap" size={14} color={TEXT2} strokeWidth={1.75}/>Resting HRV</div>
           <div style={{ fontSize: 20, fontWeight: 700 }}>68 ms</div>
           <div style={{ fontSize: 13, color: '#5B8DEF', marginTop: 4 }}>↑ Higher</div>
         </div>
         <div style={{ background: SURFACE, borderRadius: 14, padding: 14, flex: 1 }}>
-          <div style={{ fontSize: 14, marginBottom: 4 }}>❤️ Resting HR</div>
+          <div style={{ fontSize: 14, marginBottom: 4, display: "flex", alignItems: "center", gap: 6 }}><Icon name="heart" size={14} color={TEXT2} strokeWidth={1.75}/>Resting HR</div>
           <div style={{ fontSize: 20, fontWeight: 700 }}>52 bpm</div>
           <div style={{ fontSize: 13, color: TEXT2, marginTop: 4 }}>→ Normal</div>
         </div>
@@ -80,7 +81,7 @@ export default function RecoveryDetail({ navigate, openModal }) {
           onClick={() => openModal('primary-sleep')}
         >
           <div style={{ position: 'relative', width: 40, height: 40 }}>
-            <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#1E2240', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🌙</div>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#1E2240', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon name="moon" size={20} color="#7B8EF0" strokeWidth={1.75}/></div>
             <div style={{ position: 'absolute', bottom: -4, right: -4, background: SLEEP_COLOR, color: '#fff', fontSize: 10, fontWeight: 700, borderRadius: 8, padding: '1px 5px', minWidth: 20, textAlign: 'center' }}>87</div>
           </div>
           <div style={{ flex: 1 }}>
