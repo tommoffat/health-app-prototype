@@ -28,11 +28,11 @@ export default function RecoveryDetail({ navigate, openModal }) {
     <div style={{ background: 'linear-gradient(160deg, #080E1A 0%, #0A1828 50%, #0D1020 100%)', minHeight: '100vh', color: TEXT, paddingBottom: 40 }}>
       {/* Top bar */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px 0' }}>
-        <div style={{ fontSize: 24, cursor: 'pointer', width: 40 }} onClick={() => navigate('home')}>←</div>
+        <button style={{ background: 'none', border: 'none', color: TEXT, cursor: 'pointer', width: 40, padding: 0, display: 'flex', alignItems: 'center' }} onClick={() => navigate('home')}><svg width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><path d='M15 18l-6-6 6-6'/></svg></button>
         <div style={{ fontWeight: 700, fontSize: 18 }}>Recovery</div>
         <div style={{ display: 'flex', gap: 16, width: 40, justifyContent: 'flex-end' }}>
-          <span style={{ fontSize: 18, cursor: 'pointer' }}>↗</span>
-          <span style={{ fontSize: 18, cursor: 'pointer' }}>🔔</span>
+          <svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' style={{cursor:'pointer'}}><path d='M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8'/><polyline points='16 6 12 2 8 6'/><line x1='12' y1='2' x2='12' y2='15'/></svg>
+          
         </div>
       </div>
 

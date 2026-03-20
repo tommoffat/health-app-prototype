@@ -16,11 +16,11 @@ const COACHING_LABEL = '#C9A050';
 
 export default function SleepDetail({ navigate, openModal }) {
   const trends = [
-    { icon: '😴', label: 'Sleep Score', value: '87%', status: '↑ Above normal', statusColor: '#6ECC6E', sparkData: [79,83,91,85,88,87,87] },
-    { icon: '⏰', label: 'Time Asleep', value: '7h 22m', status: '↑ Above normal', statusColor: '#6ECC6E', sparkData: [6.5,7.0,7.5,7.2,7.8,7.3,7.4] },
+    { icon: 'moon', label: 'Sleep Score', value: '87%', status: '↑ Above normal', statusColor: '#6ECC6E', sparkData: [79,83,91,85,88,87,87] },
+    { icon: 'clock', label: 'Time Asleep', value: '7h 22m', status: '↑ Above normal', statusColor: '#6ECC6E', sparkData: [6.5,7.0,7.5,7.2,7.8,7.3,7.4] },
     { icon: 'brain', label: 'REM Sleep', value: '1h 58m', status: '→ Normal range', statusColor: TEXT2, sparkData: [1.5,1.8,2.1,1.7,2.0,1.9,2.0] },
-    { icon: '🌊', label: 'Deep Sleep', value: '1h 44m', status: '↑ Above normal', statusColor: '#6ECC6E', sparkData: [1.2,1.5,1.8,1.6,1.7,1.7,1.7] },
-    { icon: '🛏', label: 'Time in Bed', value: '7h 45m', status: '→ Normal range', statusColor: TEXT2, sparkData: [7.2,7.5,8.0,7.8,7.9,7.7,7.8] },
+    { icon: 'activity', label: 'Deep Sleep', value: '1h 44m', status: '↑ Above normal', statusColor: '#6ECC6E', sparkData: [1.2,1.5,1.8,1.6,1.7,1.7,1.7] },
+    { icon: 'moon', label: 'Time in Bed', value: '7h 45m', status: '→ Normal range', statusColor: TEXT2, sparkData: [7.2,7.5,8.0,7.8,7.9,7.7,7.8] },
     { icon: 'bar-chart', label: 'Sleep Efficiency', value: '94%', status: '↑ Above normal', statusColor: '#6ECC6E', sparkData: [90,92,95,93,94,94,94] },
   ];
 
@@ -28,11 +28,11 @@ export default function SleepDetail({ navigate, openModal }) {
     <div style={{ background: 'linear-gradient(160deg, #1A1040 0%, #2A1850 40%, #1A1830 100%)', minHeight: '100vh', color: TEXT, paddingBottom: 40 }}>
       {/* Top bar */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px 0' }}>
-        <div style={{ fontSize: 24, cursor: 'pointer', width: 40 }} onClick={() => navigate('home')}>←</div>
+        <button style={{ background: 'none', border: 'none', color: TEXT, cursor: 'pointer', width: 40, padding: 0, display: 'flex', alignItems: 'center' }} onClick={() => navigate('home')}><svg width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><path d='M15 18l-6-6 6-6'/></svg></button>
         <div style={{ fontWeight: 700, fontSize: 18 }}>Sleep</div>
         <div style={{ display: 'flex', gap: 16, width: 40, justifyContent: 'flex-end' }}>
-          <span style={{ fontSize: 18, cursor: 'pointer' }}>↗</span>
-          <span style={{ fontSize: 18, cursor: 'pointer' }}>🔔</span>
+          <svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' style={{cursor:'pointer'}}><path d='M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8'/><polyline points='16 6 12 2 8 6'/><line x1='12' y1='2' x2='12' y2='15'/></svg>
+          
         </div>
       </div>
 

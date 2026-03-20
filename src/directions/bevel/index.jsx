@@ -56,7 +56,7 @@ export default function BevelApp({ onExit }) {
   const activeTab = ['home', 'journal', 'fitness', 'biology'].includes(screen) ? screen : 'home'
 
   return (
-    <div style={{ maxWidth: 390, margin: '0 auto', background: BG, height: '100dvh', display: 'flex', flexDirection: 'column', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', color: TEXT, paddingTop: 'env(safe-area-inset-top, 0px)', overflow: 'hidden' }}>
+    <div style={{ position: 'fixed', inset: 0, maxWidth: 390, left: '50%', transform: 'translateX(-50%)', background: BG, display: 'flex', flexDirection: 'column', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', color: TEXT, paddingTop: 'env(safe-area-inset-top, 0px)', overflow: 'hidden' }}>
 
       {/* Main screen — scrollable content area */}
       <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>

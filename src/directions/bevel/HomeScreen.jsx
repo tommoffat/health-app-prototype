@@ -1,5 +1,5 @@
 import Icon from './components/Icon'
-import React from 'react'
+import React, { useState } from 'react'
 import ScoreRing from './components/ScoreRing'
 import HatchedRing from './components/HatchedRing'
 import MetricCard from './components/MetricCard'
@@ -87,6 +87,15 @@ function SegmentedStressGauge({ value = 56 }) {
 
 /* ── HomeScreen ──────────────────────────────────────── */
 export default function HomeScreen({ navigate, openModal, onExit }) {
+  const [dayOffset, setDayOffset] = useState(0)
+
+  const getDateLabel = (offset) => {
+    if (offset === 0) return 'Today'
+    if (offset === -1) return 'Yesterday'
+    const d = new Date()
+    d.setDate(d.getDate() + offset)
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  }
   return (
     <div style={{
       background: BG,
@@ -120,9 +129,21 @@ export default function HomeScreen({ navigate, openModal, onExit }) {
           All
         </button>
 
-        {/* Center: date */}
-        <div onClick={() => {}} style={{ fontSize: 16, fontWeight: 700, color: TEXT, cursor: 'pointer' }}>
-          March 19, 2026 ▾
+        {/* Center: date nav */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button onClick={() => setDayOffset(o => o - 1)} style={{
+            background: 'none', border: 'none', color: TEXT2, cursor: 'pointer',
+            padding: '4px 6px', borderRadius: 6, fontSize: 18, lineHeight: 1,
+          }}>‹</button>
+          <div style={{ fontSize: 15, fontWeight: 700, color: TEXT, minWidth: 90, textAlign: 'center' }}>
+            {getDateLabel(dayOffset)}
+          </div>
+          <button onClick={() => setDayOffset(o => Math.min(o + 1, 0))} style={{
+            background: 'none', border: 'none',
+            color: dayOffset === 0 ? 'rgba(255,255,255,0.2)' : TEXT2,
+            cursor: dayOffset === 0 ? 'default' : 'pointer',
+            padding: '4px 6px', borderRadius: 6, fontSize: 18, lineHeight: 1,
+          }}>›</button>
         </div>
 
         {/* Right: share + avatar */}
