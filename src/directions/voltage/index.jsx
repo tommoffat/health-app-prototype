@@ -62,7 +62,7 @@ export default function VoltageApp({ onExit }) {
 
   return (
     <div style={{
-      background: c.bg, height: '100dvh', overflowY: 'auto', WebkitOverflowScrolling: 'touch', color: c.text, position: 'relative',
+      background: c.bg, height: '100dvh', paddingTop: 'env(safe-area-inset-top, 0px)', overflowY: 'auto', WebkitOverflowScrolling: 'touch', color: c.text, position: 'relative',
       maxWidth: 430, margin: '0 auto',
     }}>
       {/* Header */}

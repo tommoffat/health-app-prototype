@@ -63,7 +63,7 @@ export default function OuraDirection({ onExit }) {
 
   return (
     <div style={{
-      height: '100dvh', display: 'flex', flexDirection: 'column',
+      height: '100dvh', display: 'flex', flexDirection: 'column', paddingTop: 'env(safe-area-inset-top, 0px)',
       background: c.bg, overflow: 'hidden',
       fontFamily: '-apple-system, SF Pro Display, system-ui, sans-serif',
     }}>

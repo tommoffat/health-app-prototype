@@ -92,7 +92,7 @@ export default function HybridDirection({ onExit }) {
 
   return (
     <div style={{
-      background: c.bg, height: '100dvh', maxWidth: 430, margin: '0 auto',
+      background: c.bg, height: '100dvh', maxWidth: 430, margin: '0 auto', paddingTop: 'env(safe-area-inset-top, 0px)',
       fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif',
       display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden',
     }}>

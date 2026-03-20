@@ -30,7 +30,7 @@ const titles = {
 
 const s = {
   shell: {
-    display: 'flex', flexDirection: 'column', height: '100dvh',
+    display: 'flex', flexDirection: 'column', height: '100dvh', paddingTop: 'env(safe-area-inset-top, 0px)',
     background: '#F2F2F7', fontFamily: '-apple-system, SF Pro Display, SF Pro Text, Helvetica Neue, Helvetica, Arial, sans-serif',
     WebkitFontSmoothing: 'antialiased', color: '#000000', maxWidth: 500, margin: '0 auto',
     position: 'relative',

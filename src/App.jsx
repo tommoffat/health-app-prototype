@@ -36,8 +36,12 @@ export default function App() {
       margin: '0 auto',
       minHeight: '100dvh',
       background: '#0A0A0F',
-      padding: '20px',
+      paddingTop: 'calc(20px + env(safe-area-inset-top, 0px))',
+      paddingLeft: '20px',
+      paddingRight: '20px',
+      paddingBottom: '20px',
       overflowY: 'auto',
+      WebkitOverflowScrolling: 'touch',
     }}>
       <h1 style={{
         color: '#FFFFFF',

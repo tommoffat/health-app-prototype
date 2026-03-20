@@ -77,6 +77,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     height: '100dvh',
+    paddingTop: 'env(safe-area-inset-top, 0px)',
     background: '#1A1410',
     color: '#F5EDD8',
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',

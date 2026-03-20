@@ -79,7 +79,7 @@ const styles = {
   container: {
     position: 'relative',
     width: '100%',
-    height: '100dvh', overflowY: 'auto', WebkitOverflowScrolling: 'touch',
+    height: '100dvh', overflowY: 'auto', WebkitOverflowScrolling: 'touch', paddingTop: 'env(safe-area-inset-top, 0px)',
     background: '#0D1117',
     fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
     color: '#E6EDF3',

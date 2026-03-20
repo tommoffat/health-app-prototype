@@ -55,17 +55,17 @@ export default function BevelApp({ onExit }) {
   const activeTab = ['home', 'journal', 'fitness', 'biology'].includes(screen) ? screen : 'home'
 
   return (
-    <div style={{ maxWidth: 390, margin: '0 auto', background: BG, height: '100dvh', position: 'relative', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', color: TEXT, overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
+    <div style={{ maxWidth: 390, margin: '0 auto', background: BG, height: '100dvh', position: 'relative', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', color: TEXT, overflowY: 'auto', WebkitOverflowScrolling: 'touch', paddingTop: 'env(safe-area-inset-top, 0px)' }}>
       {/* Exit button */}
       <button onClick={onExit} style={{ position: 'fixed', top: 12, right: 12, zIndex: 200, background: 'rgba(255,255,255,0.1)', border: 'none', color: TEXT2, fontSize: 12, padding: '6px 12px', borderRadius: 8, cursor: 'pointer' }}>✕ Exit</button>
 
       {/* Main screen */}
-      <div style={{ paddingBottom: 83 }}>
+      <div style={{ paddingBottom: 'calc(83px + env(safe-area-inset-bottom, 0px))' }}>
         <Screen navigate={navigate} openModal={openModal} {...screenProps} />
       </div>
 
       {/* Bottom tab bar */}
-      <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 390, height: 83, background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'space-around', paddingBottom: 16, boxShadow: '0 -2px 10px rgba(0,0,0,0.1)', zIndex: 100 }}>
+      <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 390, height: 'calc(83px + env(safe-area-inset-bottom, 0px))', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'space-around', paddingBottom: 'calc(16px + env(safe-area-inset-bottom, 0px))', boxShadow: '0 -2px 10px rgba(0,0,0,0.1)', zIndex: 100 }}>
         {tabs.map((tab, i) => {
           // Insert + button in the middle (after index 1, i.e., between fitness and biology... actually between journal and fitness positions)
           // Actually the tabs are: Home, Journal, +, Fitness, Biology

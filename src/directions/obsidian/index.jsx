@@ -69,6 +69,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     height: '100dvh',
+    paddingTop: 'env(safe-area-inset-top, 0px)',
     width: '100vw',
     background: '#000000',
     color: '#FFFFFF',
