@@ -301,9 +301,19 @@ export default function AuraRitualDirection({ onExit }) {
         {/* top bar */}
         <div style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          padding: '12px 20px 4px', opacity: 0.5, flexShrink: 0,
+          padding: '12px 20px 4px', flexShrink: 0,
         }}>
-          <div style={{ fontSize: 13, color: TEXT_DIM, fontWeight: 500 }}>{today.date}</div>
+          <button onClick={onExit} style={{
+            background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: 8, padding: '5px 10px', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 5, color: TEXT_DIM, fontSize: 12,
+          }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+            Directions
+          </button>
+          <div style={{ fontSize: 13, color: TEXT_DIM, fontWeight: 500, opacity: 0.6 }}>{today.date}</div>
           <div style={{
             width: 30, height: 30, borderRadius: 15, background: 'rgba(255,255,255,0.08)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',

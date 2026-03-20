@@ -90,7 +90,7 @@ export default function App() {
     <div style={{
       maxWidth: '390px',
       margin: '0 auto',
-      minHeight: '100dvh',
+      height: '100dvh',
       background: '#0A0A0F',
       paddingTop: 'calc(20px + env(safe-area-inset-top, 0px))',
       paddingLeft: '20px',
