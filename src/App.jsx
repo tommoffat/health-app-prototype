@@ -10,6 +10,18 @@ import BevelApp from './directions/bevel/index'
 import OuraApp from './directions/oura/index'
 import HybridApp from './directions/hybrid/index'
 
+import AuraRitualApp from './directions/aura-ritual/index'
+import AuraChronicleApp from './directions/aura-chronicle/index'
+import AuraBloomApp from './directions/aura-bloom/index'
+import AuraSanctumApp from './directions/aura-sanctum/index'
+
+const AURA_VARIATIONS = [
+  { id: 'aura-ritual',    name: 'Ritual',    tagline: 'One domain, full attention',  colors: ['#C9A96E', '#4ECDC4'], component: AuraRitualApp },
+  { id: 'aura-chronicle', name: 'Chronicle', tagline: 'Wellness as editorial',        colors: ['#C9A96E', '#9B59B6'], component: AuraChronicleApp },
+  { id: 'aura-bloom',     name: 'Bloom',     tagline: 'Living health organism',       colors: ['#2ECC71', '#0D1117'], component: AuraBloomApp },
+  { id: 'aura-sanctum',   name: 'Sanctum',   tagline: 'Luxury concierge wellness',   colors: ['#C9A96E', '#1A0A2E'], component: AuraSanctumApp },
+]
+
 const DIRECTIONS = [
   { id: 'obsidian', name: 'Obsidian', tagline: 'Bloomberg terminal meets fitness', colors: ['#7C6EFA', '#000000'], component: ObsidianApp },
   { id: 'solstice', name: 'Solstice', tagline: 'Warm editorial wellness journal', colors: ['#D4845A', '#1A1410'], component: SolsticeApp },
@@ -21,11 +33,55 @@ const DIRECTIONS = [
   { id: 'hybrid', name: 'Hybrid', tagline: 'Oura rings in Bevel cards', colors: ['#E8A04B', '#0F1218'], component: HybridApp },
 ]
 
+const ALL_DIRECTIONS = [...AURA_VARIATIONS, ...DIRECTIONS]
+
+const sectionLabel = {
+  fontSize: 11,
+  letterSpacing: 2,
+  textTransform: 'uppercase',
+  color: '#555',
+  marginBottom: 8,
+  marginTop: 24,
+  fontWeight: 600,
+}
+
+function DirectionCard({ dir, onSelect }) {
+  return (
+    <button
+      onClick={() => onSelect(dir.id)}
+      style={{
+        background: '#141418',
+        border: '1px solid #2A2A35',
+        borderRadius: '16px',
+        padding: '20px 16px',
+        textAlign: 'left',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+        transition: 'transform 0.15s',
+      }}
+      onMouseDown={e => e.currentTarget.style.transform = 'scale(0.96)'}
+      onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+      onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+    >
+      <div style={{
+        width: '40px',
+        height: '40px',
+        borderRadius: '12px',
+        background: `linear-gradient(135deg, ${dir.colors[0]}, ${dir.colors[1]})`,
+        border: `2px solid ${dir.colors[0]}33`,
+      }} />
+      <span style={{ color: '#FFF', fontSize: '16px', fontWeight: '600' }}>{dir.name}</span>
+      <span style={{ color: '#777', fontSize: '11px', lineHeight: '1.3' }}>{dir.tagline}</span>
+    </button>
+  )
+}
+
 export default function App() {
   const [activeDirection, setActiveDirection] = useState(null)
 
   if (activeDirection) {
-    const dir = DIRECTIONS.find(d => d.id === activeDirection)
+    const dir = ALL_DIRECTIONS.find(d => d.id === activeDirection)
     const DirectionComponent = dir.component
     return <DirectionComponent onExit={() => setActiveDirection(null)} />
   }
@@ -58,40 +114,27 @@ export default function App() {
         marginBottom: '28px',
       }}>Choose a design direction</p>
 
+      <div style={sectionLabel}>Aura Variations</div>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '12px',
+      }}>
+        {AURA_VARIATIONS.map(dir => (
+          <DirectionCard key={dir.id} dir={dir} onSelect={setActiveDirection} />
+        ))}
+      </div>
+
+      <div style={{ height: 1, background: '#2A2A35', marginTop: 28, marginBottom: 4 }} />
+
+      <div style={sectionLabel}>Directions</div>
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
         gap: '12px',
       }}>
         {DIRECTIONS.map(dir => (
-          <button
-            key={dir.id}
-            onClick={() => setActiveDirection(dir.id)}
-            style={{
-              background: '#141418',
-              border: '1px solid #2A2A35',
-              borderRadius: '16px',
-              padding: '20px 16px',
-              textAlign: 'left',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              transition: 'transform 0.15s',
-            }}
-            onMouseDown={e => e.currentTarget.style.transform = 'scale(0.96)'}
-            onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
-            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-          >
-            <div style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '12px',
-              background: `linear-gradient(135deg, ${dir.colors[0]}, ${dir.colors[1]})`,
-              border: `2px solid ${dir.colors[0]}33`,
-            }} />
-            <span style={{ color: '#FFF', fontSize: '16px', fontWeight: '600' }}>{dir.name}</span>
-            <span style={{ color: '#777', fontSize: '11px', lineHeight: '1.3' }}>{dir.tagline}</span>
-          </button>
+          <DirectionCard key={dir.id} dir={dir} onSelect={setActiveDirection} />
         ))}
       </div>
     </div>
