@@ -113,27 +113,29 @@ export default function HomeScreen({ navigate, openModal }) {
           width: 24, height: 24, borderRadius: 12,
           background: '#2A3040',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 12, cursor: 'pointer',
+          cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          📅
+          <Icon name="calendar" size={14} color={TEXT2} strokeWidth={1.75} />
         </div>
 
         {/* Center: date */}
-        <div style={{ fontSize: 16, fontWeight: 700, color: TEXT }}>
+        <div onClick={() => {}} style={{ fontSize: 16, fontWeight: 700, color: TEXT, cursor: 'pointer' }}>
           March 19, 2026 ▾
         </div>
 
         {/* Right: share + avatar */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{
-            fontSize: 16, cursor: 'pointer', color: TEXT2,
-          }}>↑</div>
+            cursor: 'pointer', color: TEXT2, display: 'flex', alignItems: 'center',
+          }}><Icon name="share" size={18} color={TEXT2} strokeWidth={1.75} /></div>
           <div style={{
             width: 36, height: 36, borderRadius: 18,
             background: '#3A4A5C',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 13, fontWeight: 600, color: TEXT,
-          }}>TM</div>
+            cursor: 'pointer',
+          }} onClick={() => navigate('profile')}>TM</div>
         </div>
       </div>
 
@@ -409,8 +411,7 @@ export default function HomeScreen({ navigate, openModal }) {
             width: 40, height: 40, borderRadius: 20,
             background: '#3A2A18',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 18,
-          }}>🧗</div>
+          }}><Icon name="dumbbell" size={20} color={STRAIN_COLOR} strokeWidth={1.75} /></div>
           <div style={{
             position: 'absolute', top: -4, right: -6,
             width: 20, height: 20, borderRadius: 10,
@@ -424,7 +425,7 @@ export default function HomeScreen({ navigate, openModal }) {
           <div style={{ fontSize: 15, fontWeight: 700, color: TEXT }}>Upper Body Strength</div>
           <div style={{ fontSize: 12, color: TEXT2, marginTop: 2 }}>Today at 9:00 AM</div>
         </div>
-        <span style={{ fontSize: 20, color: TEXT2 }}>›</span>
+        <Icon name="chevron-right" size={18} color={TEXT2} strokeWidth={2} />
       </div>
 
       {/* Timeline Item 2: Sleep */}
@@ -445,8 +446,7 @@ export default function HomeScreen({ navigate, openModal }) {
             width: 40, height: 40, borderRadius: 20,
             background: '#1E2240',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 18,
-          }}>🌙</div>
+          }}><Icon name="moon" size={20} color={SLEEP_COLOR} strokeWidth={1.75} /></div>
           <div style={{
             position: 'absolute', top: -4, right: -6,
             width: 20, height: 20, borderRadius: 10,
@@ -459,7 +459,7 @@ export default function HomeScreen({ navigate, openModal }) {
           <div style={{ fontSize: 15, fontWeight: 700, color: TEXT }}>Primary sleep</div>
           <div style={{ fontSize: 12, color: TEXT2, marginTop: 2 }}>Today at 11:02 PM</div>
         </div>
-        <span style={{ fontSize: 20, color: TEXT2 }}>›</span>
+        <Icon name="chevron-right" size={18} color={TEXT2} strokeWidth={2} />
       </div>
 
       {/* ─── 8. Bottom Buttons ───────────────────────── */}
