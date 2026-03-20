@@ -87,15 +87,21 @@ function SegmentedStressGauge({ value = 56 }) {
 
 /* ── HomeScreen ──────────────────────────────────────── */
 export default function HomeScreen({ navigate, openModal, onExit }) {
-  const [dayOffset, setDayOffset] = useState(0)
+  const today = new Date(2026, 2, 19) // March 19 2026 (fake data date)
+  const [selectedDate, setSelectedDate] = useState(new Date(2026, 2, 19))
+  const [calOpen, setCalOpen] = useState(false)
+  const [calMonth, setCalMonth] = useState(new Date(2026, 2, 1))
 
-  const getDateLabel = (offset) => {
-    if (offset === 0) return 'Today'
-    if (offset === -1) return 'Yesterday'
-    const d = new Date()
-    d.setDate(d.getDate() + offset)
+  const formatDateLabel = (d) => {
+    const t = new Date(2026, 2, 19)
+    if (d.toDateString() === t.toDateString()) return 'Today'
+    const y = new Date(t); y.setDate(t.getDate() - 1)
+    if (d.toDateString() === y.toDateString()) return 'Yesterday'
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   }
+
+  const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate()
+  const getFirstDayOfWeek = (year, month) => new Date(year, month, 1).getDay()
   return (
     <div style={{
       background: BG,
@@ -129,22 +135,16 @@ export default function HomeScreen({ navigate, openModal, onExit }) {
           All
         </button>
 
-        {/* Center: date nav */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <button onClick={() => setDayOffset(o => o - 1)} style={{
-            background: 'none', border: 'none', color: TEXT2, cursor: 'pointer',
-            padding: '4px 6px', borderRadius: 6, fontSize: 18, lineHeight: 1,
-          }}>‹</button>
-          <div style={{ fontSize: 15, fontWeight: 700, color: TEXT, minWidth: 90, textAlign: 'center' }}>
-            {getDateLabel(dayOffset)}
-          </div>
-          <button onClick={() => setDayOffset(o => Math.min(o + 1, 0))} style={{
-            background: 'none', border: 'none',
-            color: dayOffset === 0 ? 'rgba(255,255,255,0.2)' : TEXT2,
-            cursor: dayOffset === 0 ? 'default' : 'pointer',
-            padding: '4px 6px', borderRadius: 6, fontSize: 18, lineHeight: 1,
-          }}>›</button>
-        </div>
+        {/* Center: date tap → calendar */}
+        <button onClick={() => setCalOpen(o => !o)} style={{
+          background: 'none', border: 'none', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', gap: 6, color: TEXT,
+        }}>
+          <span style={{ fontSize: 15, fontWeight: 700 }}>{formatDateLabel(selectedDate)}</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={TEXT2} strokeWidth="2.5" strokeLinecap="round">
+            <path d={calOpen ? 'M18 15l-6-6-6 6' : 'M6 9l6 6 6-6'}/>
+          </svg>
+        </button>
 
         {/* Right: share + avatar */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -160,6 +160,56 @@ export default function HomeScreen({ navigate, openModal, onExit }) {
           }} onClick={() => navigate('profile')}>TM</div>
         </div>
       </div>
+
+      {/* ─── Calendar Dropdown ─── */}
+      {calOpen && (
+        <div style={{
+          position: 'absolute', top: 60, left: 16, right: 16, zIndex: 200,
+          background: SURFACE, borderRadius: 16, padding: 16,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.6)', border: `1px solid ${BORDER}`,
+        }}>
+          {/* Month header */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <button onClick={() => setCalMonth(m => new Date(m.getFullYear(), m.getMonth() - 1, 1))}
+              style={{ background: 'none', border: 'none', color: TEXT2, cursor: 'pointer', fontSize: 18, padding: '0 8px' }}>‹</button>
+            <span style={{ fontSize: 14, fontWeight: 700, color: TEXT }}>
+              {calMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+            </span>
+            <button onClick={() => setCalMonth(m => new Date(m.getFullYear(), m.getMonth() + 1, 1))}
+              style={{ background: 'none', border: 'none', color: TEXT2, cursor: 'pointer', fontSize: 18, padding: '0 8px' }}>›</button>
+          </div>
+          {/* Day labels */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 2, marginBottom: 4 }}>
+            {['S','M','T','W','T','F','S'].map((d, i) => (
+              <div key={i} style={{ textAlign: 'center', fontSize: 10, color: TEXT2, padding: '2px 0' }}>{d}</div>
+            ))}
+          </div>
+          {/* Days grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 2 }}>
+            {Array.from({ length: getFirstDayOfWeek(calMonth.getFullYear(), calMonth.getMonth()) }).map((_, i) => (
+              <div key={`empty-${i}`} />
+            ))}
+            {Array.from({ length: getDaysInMonth(calMonth.getFullYear(), calMonth.getMonth()) }).map((_, i) => {
+              const day = i + 1
+              const d = new Date(calMonth.getFullYear(), calMonth.getMonth(), day)
+              const isSelected = d.toDateString() === selectedDate.toDateString()
+              const isToday = d.toDateString() === new Date(2026, 2, 19).toDateString()
+              const isFuture = d > new Date(2026, 2, 19)
+              return (
+                <button key={day} onClick={() => { if (!isFuture) { setSelectedDate(d); setCalOpen(false) } }}
+                  style={{
+                    background: isSelected ? SLEEP_COLOR : 'none',
+                    border: isToday && !isSelected ? `1px solid ${TEXT2}` : '1px solid transparent',
+                    borderRadius: 8, color: isFuture ? 'rgba(255,255,255,0.15)' : isSelected ? TEXT : TEXT,
+                    fontSize: 13, fontWeight: isSelected ? 700 : 400,
+                    padding: '6px 0', cursor: isFuture ? 'default' : 'pointer',
+                    textAlign: 'center',
+                  }}>{day}</button>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ─── 2. Status Pills ────────────────────────── */}
       <div style={{ padding: '8px 20px', display: 'flex', gap: 8 }}>
