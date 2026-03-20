@@ -86,7 +86,7 @@ function SegmentedStressGauge({ value = 56 }) {
 }
 
 /* ── HomeScreen ──────────────────────────────────────── */
-export default function HomeScreen({ navigate, openModal }) {
+export default function HomeScreen({ navigate, openModal, onExit }) {
   return (
     <div style={{
       background: BG,
@@ -108,16 +108,17 @@ export default function HomeScreen({ navigate, openModal }) {
         justifyContent: 'space-between',
         padding: '12px 20px',
       }}>
-        {/* Left: calendar icon */}
-        <div style={{
-          width: 24, height: 24, borderRadius: 12,
-          background: '#2A3040',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'pointer',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        {/* Left: back to directions */}
+        <button onClick={onExit} style={{
+          background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: 8, padding: '5px 10px', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', gap: 5, color: TEXT2, fontSize: 12,
         }}>
-          <Icon name="calendar" size={14} color={TEXT2} strokeWidth={1.75} />
-        </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+          All
+        </button>
 
         {/* Center: date */}
         <div onClick={() => {}} style={{ fontSize: 16, fontWeight: 700, color: TEXT, cursor: 'pointer' }}>
